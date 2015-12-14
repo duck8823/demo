@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head>
+		<!-- title -->
+		<title layout:title-pattern="$CONTENT_TITLE - $DECORATOR_TITLE">Duck8823</title>
+
+		<!-- Charset -->
+		<meta charset="UTF-8" />
+
+		<!-- contextPath -->
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		var app = {};
+		app.CONTEXT_ROOT = /*[[${#httpServletRequest.contextPath}]]*/ '';
+		/*]]>*/
+		</script>
+
+		<!-- Mobile first -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+		<!-- jQuery CDN -->
+		<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+		
+		<!-- Bootstrap CDN -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" />
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+		<!-- scripts -->
+		<script th:src="@{/js/jquery.loader.js}" ></script>
+
+		<!-- styles -->
+		<link rel="stylesheet" th:href="@{/css/loader.css}" />
+		<link rel="stylesheet" th:href="@{/css/common.css}" />
+	</head>
+	<body>
+		<!-- page loader -->
+		<div id="loader">
+			<div class="spinner">
+				<div class="bounce1"></div>
+				<div class="bounce2"></div>
+				<div class="bounce3"></div>
+			</div>
+		</div>
+		<div id="fade"></div>
+		<section class="container">
+			<div class="row">
+				<header>
+					<h1>Demo App.</h1>
+				</header>
+				<div class="col-sm-2"></div>
+				<div class="col-sm-8 main">
+					
+					<!-- main content -->
+					<th:block layout:fragment="content">
+						No content.
+					</th:block>
+					
+				</div>
+				<div class="col-sm-2"></div>
+			</div>
+		</section>
+	</body>
+</html>

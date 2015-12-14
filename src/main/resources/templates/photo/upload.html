@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorator="common/layout">
+
+	<head>
+		<title>Upload</title>
+		<meta charset="UTF-8" />
+		<script th:src="@{/js/jquery.upload.js}"></script>
+	</head>
+
+	<body>
+		<!-- content -->
+		<th:block layout:fragment="content">
+			<form method="post" enctype="multipart/form-data" th:action="@{/upload/}">
+				<h2>アップロード</h2>
+				<input type="file" name="files" multiple="multiple" class="form-control" />
+				<!-- Submit Button -->
+				<button type="submit" class="btn btn-primary">アップロード</button>
+			</form>
+		</th:block>
+	</body>
+
+</html>
