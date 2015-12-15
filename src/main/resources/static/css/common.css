@@ -1,3 +1,7 @@
+html {
+	overflow-y: scroll;
+}
+
 body {
 	font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, sans-serif;
 	font-size: 1em;

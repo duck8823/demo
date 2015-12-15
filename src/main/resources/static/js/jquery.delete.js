@@ -21,6 +21,8 @@
 		});
 
 		$(".link").on("click", function(){
+			$("#loader").css("display", "block");
+			$("#fade").css("display", "block");
 			var id = $(this).parent(".photo").data("id");
 			$.ajax({
 				url : app.CONTEXT_ROOT + "/delete/" + id,
@@ -37,6 +39,8 @@
 					lastRow: 'nojustify',
 					margins: 2
 				});
+				$("#loader").css("display", "none");
+				$("#fade").css("display", "none");
 			})
 		})
 	})
