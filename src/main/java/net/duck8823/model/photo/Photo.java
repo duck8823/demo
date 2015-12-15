@@ -63,6 +63,10 @@ public class Photo implements FieldHandled {
 	public Photo(){
 	}
 
+	public Photo(Long id){
+		this.id = id;
+	}
+	
 	public Photo(MultipartFile file) {
 		try {
 			Directory directory = JpegMetadataReader.readMetadata(file.getInputStream()).getDirectory(ExifIFD0Directory.class);

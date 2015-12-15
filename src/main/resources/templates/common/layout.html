@@ -20,12 +20,12 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 
 		<!-- jQuery CDN -->
-		<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script th:src="@{//code.jquery.com/jquery-1.11.3.min.js}"></script>
 		
 		<!-- Bootstrap CDN -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" />
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" th:href="@{//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css}" />
+		<link rel="stylesheet" th:href="@{//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css}" />
+		<script th:src="@{//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
 
 		<!-- scripts -->
 		<script th:src="@{/js/jquery.loader.js}" ></script>
@@ -44,7 +44,7 @@
 			</div>
 		</div>
 		<div id="fade"></div>
-		<section class="container">
+		<section class="container-fluid">
 			<div class="row">
 				<header>
 					<h1>Demo App.</h1>
