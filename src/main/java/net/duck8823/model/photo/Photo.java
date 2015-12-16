@@ -94,6 +94,12 @@ public class Photo implements FieldHandled {
 		}
 	}
 
+	public void rotate() throws Exception {
+		this.image = ImageUtil.rotate(this.getImage());
+		this.thumbnail = Base64.getEncoder().encodeToString(ImageUtil.resize(this.image, 100, ImageUtil.ResizeMode.SHORT, true));
+	}
+
+
 	@Override
 	public int hashCode(){
 		return id.intValue();

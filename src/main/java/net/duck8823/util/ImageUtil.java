@@ -20,6 +20,35 @@ import java.io.ByteArrayOutputStream;
 public class ImageUtil {
 
 	/**
+	 * 画像を90度回転する
+	 *
+	 * @param bytes 変換前の画像バイナリデータ
+	 * @return byte[] 変換後の画像バイナリ
+	 * @throws Exception
+	 */
+	public static byte[] rotate(byte[] bytes) throws Exception {
+
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+		BufferedImage src = ImageIO.read(inputStream);
+
+		int height = src.getHeight();
+		AffineTransform transform = AffineTransform.getRotateInstance(Math.toRadians(90), height/2, height/2);
+		AffineTransformOp transformOp = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
+
+		BufferedImage dst = new BufferedImage(src.getHeight(), src.getWidth(), src.getType());
+		transformOp.filter(src, dst);
+
+		BufferedOutputStream stream = new BufferedOutputStream(outputStream);
+		dst.flush();
+		ImageIO.write(dst, "JPEG", outputStream);
+		stream.flush();
+		stream.close();
+		return outputStream.toByteArray();
+	}
+
+	/**
 	 * 画像のサイズを変更する
 	 *
 	 * @param bytes 変換前の画像バイナリデータ
@@ -27,7 +56,7 @@ public class ImageUtil {
 	 * @return byte[] 変換後の画像バイナリ
 	 * @throws Exception
 	 */
-	public static final byte[] resize(byte[] bytes, int length, ResizeMode mode) throws Exception {
+	public static byte[] resize(byte[] bytes, int length, ResizeMode mode) throws Exception {
 		return resize(bytes, length, mode, false);
 	}
 
@@ -40,7 +69,7 @@ public class ImageUtil {
 	 * @return byte[] 変換後の画像バイナリ
 	 * @throws Exception
 	 */
-	public static final byte[] resize(byte[] bytes, int length, ResizeMode mode, boolean createThumbnail) throws Exception {
+	public static byte[] resize(byte[] bytes, int length, ResizeMode mode, boolean createThumbnail) throws Exception {
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
@@ -89,6 +118,12 @@ public class ImageUtil {
 		return outputStream.toByteArray();
 	}
 
+	/**
+	 * 画像を正方形に切り取る
+	 *
+	 * @param image トリミング前の画像
+	 * @return BufferedImage トリミング後の画像
+	 */
 	private static BufferedImage trim(BufferedImage image){
 		int len;
 		int x;
@@ -106,7 +141,6 @@ public class ImageUtil {
 	}
 
 	public enum ResizeMode {
-
 		SHORT{
 			@Override
 			double getScale(int length, BufferedImage image) {

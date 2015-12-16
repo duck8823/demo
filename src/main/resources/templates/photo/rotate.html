@@ -4,26 +4,26 @@
 	  layout:decorator="common/layout">
 
 	<head>
-		<title>Delete Photo</title>
+		<title>Rotate Photo</title>
 		<meta charset="UTF-8" />
 
 		<link rel="stylesheet" th:href="@{/css/justifiedGallery.min.css}" />
-		<link rel="stylesheet" th:href="@{/css/delete.css}" />
+		<link rel="stylesheet" th:href="@{/css/rotate.css}" />
 
 		<script th:src="@{/js/jquery.justifiedGallery.min.js}"></script>
-		<script th:src="@{/js/jquery.delete.js}" ></script>
+		<script th:src="@{/js/jquery.rotate.js}" ></script>
 		<script th:src="@{/js/jquery.gallery.js}" ></script>
 	</head>
 
 	<body>
 		<!-- content -->
 		<th:block layout:fragment="content">
-			<h2>Delete Photo</h2>
+			<h2>Rotate Photo</h2>
 			<div id="links">
 				<div class="photo" th:attr="data-id=${photo.id}" th:each="photo : ${photos}">
 					<img th:src="*{'data:image/jpeg;base64,'+photo.thumbnail}" th:alt="${#calendars.format(photo.takeDate,'yyyy.MM.dd')}" />
 					<div class="link">
-						<span class="glyphicon glyphicon-ban-circle" ></span>
+						<span class="glyphicon glyphicon-repeat" ></span>
 					</div>
 				</div>
 			</div>
