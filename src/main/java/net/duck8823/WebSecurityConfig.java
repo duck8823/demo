@@ -15,7 +15,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  * Created by maeda on 2015/12/12.
  */
 @Configuration
-@PropertySource("classpath:application.properties")
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -34,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity web) throws Exception {
 		web.authorizeRequests()
-				.antMatchers("/", "/photo/**", "/css/**", "/js/**", "/img/**")
+				.antMatchers("/", "/twitter/**", "/photo/**", "/css/**", "/js/**", "/img/**")
 				.permitAll()
 				.anyRequest()
 				.authenticated()

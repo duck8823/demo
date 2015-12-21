@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import twitter4j.TwitterException;
 
 /**
  * Created by maeda on 2015/12/12.
@@ -21,7 +22,7 @@ public class GalleryController {
 	private PhotoService photoService;
 
 	@RequestMapping
-	public String top(Model model){
+	public String top(Model model) throws TwitterException {
 		model.addAttribute("photos", photoService.list());
 		return "photo/gallery";
 	}

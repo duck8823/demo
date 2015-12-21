@@ -4,6 +4,8 @@ import net.duck8823.model.photo.Photo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -17,6 +19,7 @@ import javax.sql.DataSource;
  *
  */
 @EnableScheduling
+@PropertySources({@PropertySource("classpath:application.properties"), @PropertySource("classpath:twitter4j.properties")})
 @Configuration
 public class DemoConfiguration {
 
@@ -31,7 +34,7 @@ public class DemoConfiguration {
 	public LocalSessionFactoryBean sessionFactory(){
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource);
-		sessionFactory.setAnnotatedClasses(new Class<?>[]{Photo.class});
+		sessionFactory.setAnnotatedClasses(Photo.class);
 		return sessionFactory;
 	}
 	

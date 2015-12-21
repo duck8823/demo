@@ -12,6 +12,7 @@ import java.awt.image.Kernel;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * Created by maeda on 2015/12/13.
@@ -26,7 +27,7 @@ public class ImageUtil {
 	 * @return byte[] 変換後の画像バイナリ
 	 * @throws Exception
 	 */
-	public static byte[] rotate(byte[] bytes) throws Exception {
+	public static byte[] rotate(byte[] bytes) throws IOException {
 
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -56,7 +57,7 @@ public class ImageUtil {
 	 * @return byte[] 変換後の画像バイナリ
 	 * @throws Exception
 	 */
-	public static byte[] resize(byte[] bytes, int length, ResizeMode mode) throws Exception {
+	public static byte[] resize(byte[] bytes, int length, ResizeMode mode) throws IOException {
 		return resize(bytes, length, mode, false);
 	}
 
@@ -69,7 +70,7 @@ public class ImageUtil {
 	 * @return byte[] 変換後の画像バイナリ
 	 * @throws Exception
 	 */
-	public static byte[] resize(byte[] bytes, int length, ResizeMode mode, boolean createThumbnail) throws Exception {
+	public static byte[] resize(byte[] bytes, int length, ResizeMode mode, boolean createThumbnail) throws IOException {
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();

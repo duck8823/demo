@@ -1,6 +1,5 @@
 package net.duck8823;
 
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.ErrorPage;
 import org.springframework.context.annotation.Bean;
@@ -22,14 +21,11 @@ public class ErrorConfiguration {
 	
 	@Bean
 	public EmbeddedServletContainerCustomizer containerCustomizer(){
-		return new EmbeddedServletContainerCustomizer() {
-			@Override
-			public void customize(ConfigurableEmbeddedServletContainer factory) {
-				factory.addErrorPages(new ErrorPage(HttpStatus.BAD_REQUEST, BAD_REQUEST_PAGE));
-				factory.addErrorPages(new ErrorPage(HttpStatus.UNAUTHORIZED, UNAUTHORIZED_PAGE));
-				factory.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, NOT_FOUND_PAGE));
-				factory.addErrorPages(new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR_PAGE));
-			}
+		return factory -> {
+			factory.addErrorPages(new ErrorPage(HttpStatus.BAD_REQUEST, BAD_REQUEST_PAGE));
+			factory.addErrorPages(new ErrorPage(HttpStatus.UNAUTHORIZED, UNAUTHORIZED_PAGE));
+			factory.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, NOT_FOUND_PAGE));
+			factory.addErrorPages(new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR_PAGE));
 		};
 	}
 }

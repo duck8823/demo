@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorator="common/layout">
+	  
+	<head>
+		<!-- title -->
+		<title>Word Cloud</title>
+		<!-- Charset -->
+		<meta charset="UTF-8" />
+
+		<script th:src="@{//cdnjs.cloudflare.com/ajax/libs/d3/3.5.12/d3.min.js}" ></script>
+		<script th:src="@{/js/d3.layout.cloud.js}" ></script>
+
+		<script th:src="@{/js/d3.wordCloud.js}"></script>
+	</head>
+	
+	<!-- content -->
+	<th:block layout:fragment="content">
+		<form method="post" enctype="multipart/form-data" th:action="@{/login/}">
+			<h2>Word Cloud</h2>
+			<div id="cloud">
+			</div>
+		</form>
+	</th:block>
+</html>

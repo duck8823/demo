@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Base64;
 import java.util.Date;
@@ -94,7 +95,7 @@ public class Photo implements FieldHandled {
 		}
 	}
 
-	public void rotate() throws Exception {
+	public void rotate() throws IOException {
 		this.image = ImageUtil.rotate(this.getImage());
 		this.thumbnail = Base64.getEncoder().encodeToString(ImageUtil.resize(this.image, 100, ImageUtil.ResizeMode.SHORT, true));
 	}

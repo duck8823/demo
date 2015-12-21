@@ -8,12 +8,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import twitter4j.TwitterException;
+
+import java.io.IOException;
 
 /**
  * Created by maeda on 2015/12/12.
  */
 @Transactional
-@RequestMapping("/upload/")
+@RequestMapping("/upload")
 @Controller
 public class UploadController {
 
@@ -26,7 +29,7 @@ public class UploadController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String upload(UploadFiles files) throws Exception {
+	public String upload(UploadFiles files) throws TwitterException {
 		photoService.save(new Photos(files));
 		return "photo/upload";
 	}
