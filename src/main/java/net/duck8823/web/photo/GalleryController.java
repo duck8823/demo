@@ -15,7 +15,7 @@ import twitter4j.TwitterException;
  */
 @Transactional
 @Controller
-@RequestMapping("/")
+@RequestMapping
 public class GalleryController {
 
 	@Autowired
@@ -28,7 +28,7 @@ public class GalleryController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/photo/{id}", produces = "image/jpeg")
+	@RequestMapping(value = "photo/{id}", produces = "image/jpeg")
 	public byte[] show(@PathVariable Long id) {
 		return photoService.findById(id).get().getImage();
 	}

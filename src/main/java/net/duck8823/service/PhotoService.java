@@ -3,9 +3,10 @@ package net.duck8823.service;
 import net.duck8823.model.photo.Photo;
 import net.duck8823.model.photo.PhotoRepository;
 import net.duck8823.model.photo.Photos;
-import net.duck8823.model.tweeet.Tweet;
+import net.duck8823.model.twitter.Tweet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import twitter4j.TwitterException;
 
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ public class PhotoService {
 
 	@Autowired
 	private PhotoRepository photoRepository;
+
 
 	public Optional<Photo> findById(Long id){
 		return photoRepository.findById(id);
@@ -34,9 +36,8 @@ public class PhotoService {
 		photoRepository.save(photo);
 	}
 
-	public void save(Photos photos) throws Exception {
+	public void save(Photos photos) throws TwitterException {
 		photos.stream().forEach(photoRepository::save);
-		new Tweet(photos.size() + " 枚の写真をアップロードしました。").post();
 	}
 
 	public void delete(Photo photo){

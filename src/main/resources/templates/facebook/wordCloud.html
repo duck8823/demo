@@ -14,7 +14,7 @@
 
 		<script type="text/javascript" th:inline="javascript">
 			/*<![CDATA[*/
-			var sns = "twitter";
+			var sns = "facebook";
 			/*]]>*/
 		</script>
 		<script th:src="@{/js/d3.wordCloud.js}"></script>
@@ -23,7 +23,7 @@
 	<!-- content -->
 	<th:block layout:fragment="content">
 		<form method="post" enctype="multipart/form-data" th:action="@{/login/}">
-			<h2>Twitter Word Cloud</h2>
+			<h2>Facebook Word Cloud</h2>
 			<div id="cloud">
 			</div>
 		</form>

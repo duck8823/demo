@@ -1,8 +1,9 @@
 package net.duck8823.web.twitter;
 
 import lombok.extern.log4j.Log4j;
-import net.duck8823.model.twitter.TokenizedWordCountList;
+import net.duck8823.context.word.TokenizedWordCount;
 import net.duck8823.model.twitter.TwitterAuthentication;
+import net.duck8823.context.word.WordHandler;
 import net.duck8823.service.TwitterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,11 +20,13 @@ import twitter4j.auth.OAuthAuthorization;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationContext;
 
+import java.util.List;
+
 /**
  * Created by maeda on 2015/12/20.
  */
 @Log4j
-@RequestMapping("/twitter")
+@RequestMapping("twitter")
 @Controller
 public class TwitterController {
 
@@ -68,7 +71,7 @@ public class TwitterController {
 
 	@ResponseBody
 	@RequestMapping("wordCount")
-	public TokenizedWordCountList wordCount() throws TwitterException {
+	public List<TokenizedWordCount> wordCount() throws TwitterException {
 		Twitter twitter = new TwitterFactory().getInstance(authentication.getAccessToken());
 		return twitterService.getTokenizedWordCountMap(twitter);
 	}
@@ -80,7 +83,7 @@ public class TwitterController {
 			return "redirect:requestToken";
 		}
 		Twitter twitter = new TwitterFactory().getInstance(authentication.getAccessToken());
-		model.addAttribute("tweetMedias", twitterService.getTweetMedias(twitter));
+		model.addAttribute("medias", twitterService.getTweetMedias(twitter));
 		return "twitter/gallery";
 	}
 }

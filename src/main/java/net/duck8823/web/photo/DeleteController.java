@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Created by maeda on 2015/12/16.
  */
 @Transactional
-@RequestMapping("/delete")
+@RequestMapping("delete")
 @Controller
 public class DeleteController {
 

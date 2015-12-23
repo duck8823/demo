@@ -1,4 +1,4 @@
-package net.duck8823.model.twitter;
+package net.duck8823.context.word;
 
 import lombok.Data;
 

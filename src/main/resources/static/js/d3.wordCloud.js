@@ -15,7 +15,7 @@
 		var words = [];
 		$.ajax({
 			type: "GET",
-			url: app.CONTEXT_ROOT + "/twitter/wordCount",
+			url: app.CONTEXT_ROOT + "/" + sns + "/wordCount",
 			async: false,
 			dataType: "text",
 			success: function(data){

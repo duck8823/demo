@@ -81,7 +81,7 @@ public class Photo implements FieldHandled {
 
 	public void setImage(byte[] image){
 		if(fieldHandler != null){
-			fieldHandler.writeObject(this, "image", this.image, image);
+			fieldHandler.writeObject(this, Photo_.image.getName(), this.image, image);
 		} else {
 			this.image = image;
 		}
@@ -89,7 +89,7 @@ public class Photo implements FieldHandled {
 
 	public byte[] getImage() {
 		if(fieldHandler != null) {
-			return byte[].class.cast(fieldHandler.readObject(this, "image", image));
+			return byte[].class.cast(fieldHandler.readObject(this, Photo_.image.getName(), image));
 		} else {
 			return image;
 		}

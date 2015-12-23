@@ -5,7 +5,7 @@
 
 	<groupId>net.duck8823</groupId>
 	<artifactId>demo</artifactId>
-	<version>0.0.5-SNAPSHOT</version>
+	<version>0.0.6-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>demo</name>
@@ -76,6 +76,13 @@
 			<groupId>org.twitter4j</groupId>
 			<artifactId>twitter4j-core</artifactId>
 			<version>[4.0,)</version>
+		</dependency>
+
+		<!-- Facebook -->
+		<dependency>
+			<groupId>org.facebook4j</groupId>
+			<artifactId>facebook4j-core</artifactId>
+			<version>[2.0,)</version>
 		</dependency>
 
 		<!-- データベース -->

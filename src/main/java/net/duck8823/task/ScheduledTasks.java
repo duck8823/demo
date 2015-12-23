@@ -1,12 +1,14 @@
 package net.duck8823.task;
 
 import lombok.extern.log4j.Log4j;
-import net.duck8823.model.tweeet.Tweet;
+import net.duck8823.model.twitter.Tweet;
+import net.duck8823.service.BotTweetService;
 import net.duck8823.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import twitter4j.Twitter;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,6 +23,9 @@ public class ScheduledTasks {
 	@Autowired
 	private PhotoService photoService;
 
+	@Autowired
+	private BotTweetService botTweetService;
+
 	@Transactional
 	@Scheduled(cron = "0 0 * * * *", zone = "Asia/Tokyo")
 	public void tweet() throws Exception {
@@ -28,6 +33,8 @@ public class ScheduledTasks {
 		String date = sdf.format(new Date(System.currentTimeMillis()));
 
 		log.info("Twitter 自動投稿 : " + date);
-		new Tweet("", photoService.random().get()).post();
+		Tweet tweet = new Tweet("", photoService.random().get());
+		tweet.touch();
+		botTweetService.post(tweet);
 	}
 }

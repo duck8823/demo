@@ -10,6 +10,8 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by maeda on 2015/12/21.
@@ -23,8 +25,9 @@ public class BotTweetService {
 
 	public void post(Tweet tweet) throws TwitterException {
 		String message = "";
-		if(StringUtils.isEmpty(tweet.getTimestamp())){
-			message = tweet.getTimestamp();
+		if(tweet.getTimestamp() != null){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+			message = sdf.format(tweet.getTimestamp());
 		}
 		message += tweet.getMessage();
 		StatusUpdate status = new StatusUpdate(message);

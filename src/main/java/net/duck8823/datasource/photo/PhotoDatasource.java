@@ -2,6 +2,7 @@ package net.duck8823.datasource.photo;
 
 import net.duck8823.model.photo.Photo;
 import net.duck8823.model.photo.PhotoRepository;
+import net.duck8823.model.photo.Photo_;
 import net.duck8823.model.photo.Photos;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -14,6 +15,7 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -29,7 +31,7 @@ public class PhotoDatasource implements PhotoRepository {
 
 	@Override
 	public Optional<Photo> findById(Long id) {
-		return Optional.ofNullable(Photo.class.cast(getSession().createCriteria(Photo.class).setFetchMode("data", FetchMode.JOIN).add(Restrictions.eq("id", id)).uniqueResult()));
+		return Optional.ofNullable(Photo.class.cast(getSession().createCriteria(Photo.class).setFetchMode(Photo_.image.getName(), FetchMode.JOIN).add(Restrictions.eq(Photo_.id.getName(), id)).uniqueResult()));
 	}
 
 	@Override
@@ -41,7 +43,7 @@ public class PhotoDatasource implements PhotoRepository {
 
 	@Override
 	public Photos list() {
-		return new Photos(getSession().createCriteria(Photo.class).addOrder(Order.desc("takeDate")).list());
+		return new Photos(getSession().createCriteria(Photo.class).addOrder(Order.desc(Photo_.takeDate.getName())).list());
 	}
 
 	@Override

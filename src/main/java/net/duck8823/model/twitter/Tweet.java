@@ -16,7 +16,7 @@ import java.util.Date;
 @Getter
 public class Tweet {
 
-	private String timestamp;
+	private Date timestamp;
 
 	private String message;
 
@@ -30,13 +30,8 @@ public class Tweet {
 		this.photo = photo;
 	}
 
-	public Tweet touch() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-		this.timestamp = sdf.format(new Date(System.currentTimeMillis())) + "\n";
-		return this;
+	public void touch() {
+		this.timestamp =new Date(System.currentTimeMillis());
 	}
-
-
-
 
 }

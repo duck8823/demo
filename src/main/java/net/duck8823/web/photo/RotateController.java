@@ -18,7 +18,7 @@ import java.io.IOException;
  * Created by maeda on 2015/12/16.
  */
 @Transactional
-@RequestMapping("/rotate")
+@RequestMapping("rotate")
 @Controller
 public class RotateController {
 
@@ -32,7 +32,7 @@ public class RotateController {
 	}
 
 	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "{id}", method = RequestMethod.POST)
 	public void rotate(@PathVariable Long id) throws IOException {
 		Photo photo = photoService.findById(id).get();
 		photo.rotate();

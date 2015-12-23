@@ -1,4 +1,4 @@
-package net.duck8823.model.twitter;
+package net.duck8823.context.media;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.util.Date;
  */
 @Getter
 @AllArgsConstructor
-public class TweetMedia {
+public class Media {
 
 	private String mediaURL;
 
