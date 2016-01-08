@@ -103,6 +103,9 @@ public class Photo implements FieldHandled {
 
 	@Override
 	public int hashCode(){
+		if(id == null){
+			return 0;
+		}
 		return id.intValue();
 	}
 

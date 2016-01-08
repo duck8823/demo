@@ -35,7 +35,7 @@
 
 			<div id="links">
 				<a th:href="@{'/photo/'+${photo.id}}" th:title="${#calendars.format(photo.takeDate,'yyyy.MM.dd')}" data-gallery="data-gallery" th:each="photo : ${photos}">
-					<img th:src="*{'data:image/jpeg;base64,'+photo.thumbnail}" th:alt="${#calendars.format(photo.takeDate,'yyyy.MM.dd')}" />
+					<img th:src="*{'data:image/jpeg;base64,'+photo.thumbnail}" th:alt="${#calendars.format(photo.takeDate,'yyyy.MM.dd')}" title="" />
 				</a>
 			</div>
 
