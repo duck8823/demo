@@ -50,7 +50,8 @@ public class ScheduledTasks {
 	@Transactional
 	@Scheduled(cron = "0 */5 * * * *", zone = "Asia/Tokyo")
 	public void followBack() throws TwitterException {
-		log.debug("フォローバック");
+		log.debug("フォロー / フォロー解除");
 		botTweetService.followBack();
+		botTweetService.unfollow();
 	}
 }

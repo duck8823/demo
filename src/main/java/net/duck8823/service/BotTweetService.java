@@ -1,5 +1,6 @@
 package net.duck8823.service;
 
+import lombok.extern.log4j.Log4j;
 import net.duck8823.context.twitter.QueryFactory;
 import net.duck8823.model.twitter.Tweet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.util.Set;
 /**
  * Created by maeda on 2015/12/21.
  */
+@Log4j
 @Service
 public class BotTweetService {
 
@@ -38,38 +40,61 @@ public class BotTweetService {
 	}
 
 	public void retweet() throws TwitterException {
+		int cnt = 0;
 		for(Status status : twitter.getHomeTimeline()){
 			if(status.getText() != null && status.getText().matches(".*水族館.*") && containPhoto(status.getMediaEntities()) && !status.isRetweeted()){
 				twitter.retweetStatus(status.getId());
 			}
+			cnt++;
 		}
+		log.debug(cnt + " 件の投稿をリツイートしました.");
 	}
 
 
 	public void favorite() throws TwitterException {
+		int cnt = 0;
 		for(Status status : twitter.search(QueryFactory.create("水族館")).getTweets()){
 			if(!containPhoto(status.getMediaEntities()) || twitter.showStatus(status.getId()).isFavorited()){
 				continue;
 			}
 			twitter.createFavorite(status.getId());
+			cnt++;
 		}
+		log.debug(cnt + " 件の投稿をお気に入りに登録しました.");
 	}
 
 	public void followBack() throws TwitterException {
-		for(Long id : getNoFolloweeIds()){
+		Set<Long> followIds = getFollowIds();
+		for(Long id : followIds){
 			twitter.createFriendship(id);
 		}
+		log.debug(followIds.size() + " 人のユーザをフォローしました.");
+	}
+
+	public void unfollow() throws TwitterException {
+		Set<Long> unfollowIds = getUnfollowIds();
+		for(Long id : unfollowIds){
+			twitter.destroyFriendship(id);
+		}
+		log.debug(unfollowIds.size() + " 人のユーザをフォロー解除しました.");
 	}
 
 	private boolean containPhoto(MediaEntity... mediaEntities){
 		return Arrays.asList(mediaEntities).stream().filter(mediaEntity -> mediaEntity.getType().equals("photo")).count() > 0;
 	}
 
-	private Set<Long> getNoFolloweeIds() throws TwitterException {
-		Set<Long> noFolloweeIds = new HashSet<>();
+	private Set<Long> getFollowIds() throws TwitterException {
+		Set<Long> followIds = new HashSet<>();
 		Set<Long> friendIds = getFriendIds();
-		getFollowerIds().stream().filter(id -> !friendIds.contains(id)).forEach(noFolloweeIds::add);
-		return noFolloweeIds;
+		getFollowerIds().stream().filter(id -> !friendIds.contains(id)).forEach(followIds::add);
+		return followIds;
+	}
+
+	private Set<Long> getUnfollowIds() throws TwitterException {
+		Set<Long> unfollowIds = new HashSet<>();
+		Set<Long> followerIds = getFollowerIds();
+		getFriendIds().stream().filter(id -> !followerIds.contains(id)).forEach(unfollowIds::add);
+		return unfollowIds;
 	}
 
 	private Set<Long> getFriendIds() throws TwitterException {
