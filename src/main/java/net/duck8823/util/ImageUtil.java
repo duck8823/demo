@@ -1,6 +1,8 @@
 package net.duck8823.util;
 
 import lombok.extern.log4j.Log4j;
+import org.bytedeco.javacpp.BytePointer;
+import org.bytedeco.javacpp.Loader;
 import org.springframework.util.StopWatch;
 
 import javax.imageio.ImageIO;
@@ -9,16 +11,100 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import static org.bytedeco.javacpp.opencv_core.Mat;
+import static org.bytedeco.javacpp.opencv_core.RectVector;
+import static org.bytedeco.javacpp.opencv_imgcodecs.imread;
+import static org.bytedeco.javacpp.opencv_imgproc.COLOR_BGR2GRAY;
+import static org.bytedeco.javacpp.opencv_imgproc.cvtColor;
+import static org.bytedeco.javacpp.opencv_objdetect.CascadeClassifier;
 
 /**
  * Created by maeda on 2015/12/13.
  */
 @Log4j
 public class ImageUtil {
+
+	private CascadeClassifier faceDetector;
+
+	private static ImageUtil IMAGE_UTIL = new ImageUtil();
+	private ImageUtil() {
+		/* 検出器の初期化 */
+		File file;
+		try {
+			URL url = new URL("https://raw.githubusercontent.com/Itseez/opencv/3.1.0/data/haarcascades/haarcascade_frontalface_alt.xml");
+			file = Loader.extractResource(url, null, "classifier", ".xml");
+		} catch (IOException e) {
+			throw new ExceptionInInitializerError("分類器の初期化に失敗しました.");
+		}
+		file.deleteOnExit();
+		this.faceDetector = new CascadeClassifier(file.getAbsolutePath());
+	}
+	public static ImageUtil getInstance() {
+		return IMAGE_UTIL;
+	}
+
+
+	/**
+	 * URLから画像を読み込みバイナリ配列を取得する
+	 * @param url 画像URL
+	 * @return byte[] 画像バイナリデータ
+	 * @throws IOException
+	 */
+	public static byte[] readFromURL(String url) throws IOException {
+		BufferedImage readImage = ImageIO.read(new URL(url));
+		ByteArrayOutputStream outPutStream = new ByteArrayOutputStream();
+		ImageIO.write(readImage, "JPEG", outPutStream);
+		return outPutStream.toByteArray();
+	}
+
+	/**
+	 * バイナリデータから顔領域を検出する
+	 * @param bytes 変換前の画像バイナリデータ
+	 * @return boolean 顔領域が検出されたかどうか
+	 * @throws URISyntaxException
+	 * @throws IOException
+	 */
+	public boolean detectFaces(byte[] bytes) throws URISyntaxException, IOException {
+
+		File tmpDir = new File("./tmp");
+		if(!tmpDir.exists()){
+			tmpDir.mkdir();
+		}
+
+		String tmpPathname = tmpDir.getAbsolutePath() + "/" + System.currentTimeMillis() + ".jpg";
+		write(bytes, tmpPathname);
+
+		Mat source = imread(tmpPathname);
+		new File(tmpPathname).deleteOnExit();
+
+		cvtColor(source, source, COLOR_BGR2GRAY);
+
+		RectVector detections = new RectVector();
+		faceDetector.detectMultiScale(source, detections);
+
+		return detections.size() > 0;
+	}
+
+	/**
+	 * バイナリファイルを一時ファイルに出力する
+	 * @param bytes 変換前の画像バイナリデータ
+	 * @param pathname 一時ファイルパス
+	 * @throws IOException
+	 */
+	public static void write(byte[] bytes, String pathname) throws IOException {
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+		FileOutputStream outputStream = new FileOutputStream(pathname);
+
+		BufferedImage image = ImageIO.read(inputStream);
+		ImageIO.write(image, "JPEG", outputStream);
+
+		outputStream.flush();
+		outputStream.close();
+	}
 
 	/**
 	 * 画像を90度回転する
@@ -113,6 +199,7 @@ public class ImageUtil {
 		stream.close();
 
 		stopWatch.stop();
+
 
 		log.debug("画像のリサイズ: 完了(" + stopWatch.getTotalTimeMillis() + "ms)");
 

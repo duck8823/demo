@@ -5,7 +5,7 @@
 
 	<groupId>net.duck8823</groupId>
 	<artifactId>demo</artifactId>
-	<version>0.0.7-SNAPSHOT</version>
+	<version>0.0.9-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>demo</name>
@@ -105,6 +105,12 @@
 			<groupId>com.drewnoakes</groupId>
 			<artifactId>metadata-extractor</artifactId>
 			<version>2.6.2</version>
+		</dependency>
+		<!-- JavaCV(OpenCVラッパー) -->
+		<dependency>
+			<groupId>org.bytedeco</groupId>
+			<artifactId>javacv</artifactId>
+			<version>1.1</version>
 		</dependency>
 
 		<!-- 構文解析 -->

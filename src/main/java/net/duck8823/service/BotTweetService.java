@@ -3,12 +3,15 @@ package net.duck8823.service;
 import lombok.extern.log4j.Log4j;
 import net.duck8823.context.twitter.QueryFactory;
 import net.duck8823.model.twitter.Tweet;
+import net.duck8823.util.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import twitter4j.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -39,26 +42,30 @@ public class BotTweetService {
 		twitter.updateStatus(status);
 	}
 
-	public void retweet() throws TwitterException {
+	public void retweet() throws TwitterException, IOException, URISyntaxException {
 		int cnt = 0;
 		for(Status status : twitter.getHomeTimeline()){
-			if(status.getText() != null && status.getText().matches(".*水族館.*") && containPhoto(status.getMediaEntities()) && !status.isRetweeted()){
+			if(status.getText() != null && status.getText().matches(".*水族館.*") && containsPhoto(status.getMediaEntities()) && !status.isRetweeted() && !detectFaces(status.getMediaEntities())){
 				twitter.retweetStatus(status.getId());
+				cnt++;
 			}
-			cnt++;
 		}
 		log.debug(cnt + " 件の投稿をリツイートしました.");
 	}
 
-
 	public void favorite() throws TwitterException {
 		int cnt = 0;
 		for(Status status : twitter.search(QueryFactory.create("水族館")).getTweets()){
-			if(!containPhoto(status.getMediaEntities()) || twitter.showStatus(status.getId()).isFavorited()){
+			if(!containsPhoto(status.getMediaEntities()) || status.getUser().getId() == twitter.getId() || twitter.showStatus(status.getId()).isFavorited()){
 				continue;
 			}
-			twitter.createFavorite(status.getId());
-			cnt++;
+			try {
+				twitter.createFavorite(status.getId());
+				cnt++;
+			} catch (TwitterException e){
+				log.warn("このツイートはお気に入りに登録できません. : " + e.getMessage() + " (@" + status.getUser().getScreenName() + ")");
+				break;
+			}
 		}
 		log.debug(cnt + " 件の投稿をお気に入りに登録しました.");
 	}
@@ -79,8 +86,18 @@ public class BotTweetService {
 		log.debug(unfollowIds.size() + " 人のユーザをフォロー解除しました.");
 	}
 
-	private boolean containPhoto(MediaEntity... mediaEntities){
+	private boolean containsPhoto(MediaEntity... mediaEntities){
 		return Arrays.asList(mediaEntities).stream().filter(mediaEntity -> mediaEntity.getType().equals("photo")).count() > 0;
+	}
+
+	private boolean detectFaces(MediaEntity... mediaEntities) throws IOException, URISyntaxException {
+		for(MediaEntity mediaEntity : mediaEntities){
+			if(ImageUtil.getInstance().detectFaces(ImageUtil.readFromURL(mediaEntity.getMediaURL()))){
+				log.debug("顔を検出しました. : " + mediaEntity.getMediaURL());
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private Set<Long> getFollowIds() throws TwitterException {

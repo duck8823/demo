@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import twitter4j.TwitterException;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 
 /**
  * Created by maeda on 2015/12/13.
@@ -34,21 +37,21 @@ public class ScheduledTasks {
 	}
 
 	@Transactional
-	@Scheduled(cron = "0 */5 * * * *", zone = "Asia/Tokyo")
-	public void retweet() throws TwitterException {
+	@Scheduled(cron = "0 */15 * * * *", zone = "Asia/Tokyo")
+	public void retweet() throws TwitterException, IOException, URISyntaxException {
 		log.debug("フォロワーの水族館写真をリツイート");
 		botTweetService.retweet();
 	}
 
 	@Transactional
-	@Scheduled(cron = "0 */5 * * * *", zone = "Asia/Tokyo")
+	@Scheduled(cron = "0 */15 * * * *", zone = "Asia/Tokyo")
 	public void favorite() throws TwitterException {
 		log.debug("水族館の写真検索");
 		botTweetService.favorite();
 	}
 
 	@Transactional
-	@Scheduled(cron = "0 */5 * * * *", zone = "Asia/Tokyo")
+	@Scheduled(cron = "0 */15 * * * *", zone = "Asia/Tokyo")
 	public void followBack() throws TwitterException {
 		log.debug("フォロー / フォロー解除");
 		botTweetService.followBack();
