@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorator="common/layout">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Twitter favorite/retweet Filter</title>
+		<script th:src="@{/js/jquery.twitter.manage.filter.js}"></script>
+	</head>
+	<body>
+		<th:block layout:fragment="content">
+			<table class="table filters" th:fragment="filters">
+				<tr>
+					<td>#</td>
+					<td>Filter Type</td>
+					<td>Keyword</td>
+					<td></td>
+				</tr>
+				<tr th:each="filter,status : ${filters}">
+					<td th:text="${status.count}"></td>
+					<td th:text="${filter.filterType}"></td>
+					<td th:text="${filter.keyword}"></td>
+					<td>
+						<form name="filter-delete">
+							<button class="btn btn-default delete" th:attr="data-id=${filter.id}">削除</button>
+						</form>
+					</td>
+				</tr>
+			</table>
+			<button class="btn btn-primary" data-toggle="modal" data-target="#addFilterForm" >追加</button>
+			<div class="modal" id="addFilterForm">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<form name="filter-add" method="post">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">
+									<span aria-hidden="true">&#215;</span>
+								</button>
+								<h3 class="modal-title">フィルターの追加</h3>
+							</div>
+							<div class="modal-body">
+								<div>
+									<label>
+										<h4>フィルター種類</h4>
+										<select name="filterType" class="form-control">
+											<option th:value="${filterType.name()}" th:text="${filterType.name()}" th:each="filterType: ${filterTypes}"></option>
+										</select>
+									</label>
+								</div>
+								<div>
+									<label>
+										<h4>キーワード</h4>
+										<input type="text" name="keyword" class="form-control" />
+									</label>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary submit">変更を保存する</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</th:block>
+	</body>
+</html>

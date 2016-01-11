@@ -1,6 +1,7 @@
 package net.duck8823;
 
 import net.duck8823.model.photo.Photo;
+import net.duck8823.model.twitter.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,8 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
+import org.thymeleaf.templateresolver.TemplateResolver;
 
 import javax.sql.DataSource;
 import java.util.Locale;
@@ -37,7 +40,7 @@ public class DemoConfiguration {
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource);
-		sessionFactory.setAnnotatedClasses(Photo.class);
+		sessionFactory.setAnnotatedClasses(Photo.class, Filter.class);
 		return sessionFactory;
 	}
 	
@@ -59,7 +62,6 @@ public class DemoConfiguration {
 		messageSource.setDefaultEncoding("UTF-8");
 		return messageSource;
 	}
-
 
 	/**
 	 * 言語切り替え用インターセプタの設定

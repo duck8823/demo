@@ -6,25 +6,12 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
 import net.duck8823.util.ImageUtil;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Type;
-import org.hibernate.bytecode.instrumentation.spi.FieldInterceptor;
 import org.hibernate.bytecode.internal.javassist.FieldHandled;
 import org.hibernate.bytecode.internal.javassist.FieldHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Base64;
 import java.util.Date;
 
@@ -99,7 +86,6 @@ public class Photo implements FieldHandled {
 		this.image = ImageUtil.rotate(this.getImage());
 		this.thumbnail = Base64.getEncoder().encodeToString(ImageUtil.resize(this.image, 100, ImageUtil.ResizeMode.SHORT, true));
 	}
-
 
 	@Override
 	public int hashCode(){

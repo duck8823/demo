@@ -1,5 +1,6 @@
 package net.duck8823.datasource.photo;
 
+import net.duck8823.datasource.AbstractDatasource;
 import net.duck8823.model.photo.Photo;
 import net.duck8823.model.photo.PhotoRepository;
 import net.duck8823.model.photo.Photo_;
@@ -24,10 +25,7 @@ import java.util.Random;
  * Created by maeda on 2015/12/12.
  */
 @Repository
-public class PhotoDatasource implements PhotoRepository {
-
-	@Autowired
-	private LocalSessionFactoryBean sessionFactory;
+public class PhotoDatasource extends AbstractDatasource implements PhotoRepository {
 
 	@Override
 	public Optional<Photo> findById(Long id) {
@@ -56,7 +54,4 @@ public class PhotoDatasource implements PhotoRepository {
 		getSession().delete(photo);
 	}
 
-	private Session getSession(){
-		return sessionFactory.getObject().getCurrentSession();
-	}
 }

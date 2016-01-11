@@ -2,6 +2,8 @@ package net.duck8823.service;
 
 import lombok.extern.log4j.Log4j;
 import net.duck8823.context.twitter.QueryFactory;
+import net.duck8823.model.twitter.FilterRepository;
+import net.duck8823.model.twitter.Filters;
 import net.duck8823.model.twitter.Tweet;
 import net.duck8823.util.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,12 @@ public class BotTweetService {
 	@Autowired
 	private Twitter twitter;
 
+	@Autowired
+	private FilterRepository filterRepository;
+
+	@Autowired
+	private Filters filters;
+
 	public void post(Tweet tweet) throws TwitterException {
 		String message = "";
 		if(tweet.getTimestamp() != null){
@@ -45,7 +53,7 @@ public class BotTweetService {
 	public void retweet() throws TwitterException, IOException, URISyntaxException {
 		int cnt = 0;
 		for(Status status : twitter.getHomeTimeline()){
-			if(status.getText() != null && status.getText().matches(".*水族館.*") && containsPhoto(status.getMediaEntities()) && !status.isRetweeted() && !detectFaces(status.getMediaEntities())){
+			if(status.getText() != null && status.getText().matches(".*水族館.*") && filter(status) && containsPhoto(status.getMediaEntities()) && !status.isRetweeted() && !detectFaces(status.getMediaEntities())){
 				twitter.retweetStatus(status.getId());
 				cnt++;
 			}
@@ -56,7 +64,7 @@ public class BotTweetService {
 	public void favorite() throws TwitterException {
 		int cnt = 0;
 		for(Status status : twitter.search(QueryFactory.create("水族館")).getTweets()){
-			if(!containsPhoto(status.getMediaEntities()) || status.getUser().getId() == twitter.getId() || twitter.showStatus(status.getId()).isFavorited()){
+			if(!containsPhoto(status.getMediaEntities()) || !filter(status) || status.getUser().getId() == twitter.getId() || twitter.showStatus(status.getId()).isFavorited()){
 				continue;
 			}
 			try {
@@ -98,6 +106,13 @@ public class BotTweetService {
 			}
 		}
 		return false;
+	}
+
+	private boolean filter(Status status) {
+		if(filters == null){
+			filters = new Filters(filterRepository.list());
+		}
+		return filters.parallelStream().filter(filter -> filter.matches(status)).count() > 0;
 	}
 
 	private Set<Long> getFollowIds() throws TwitterException {
