@@ -5,7 +5,7 @@
 	  
 	<head>
 		<!-- title -->
-		<title>Word Cloud</title>
+		<title th:text="#{app.word.cloud}">Word Cloud</title>
 		<!-- Charset -->
 		<meta charset="UTF-8" />
 
@@ -23,7 +23,7 @@
 	<!-- content -->
 	<th:block layout:fragment="content">
 		<form method="post" enctype="multipart/form-data" th:action="@{/login/}">
-			<h2>Twitter Word Cloud</h2>
+			<h2 th:text="#{app.word.cloud}">Word Cloud</h2>
 			<div id="cloud">
 			</div>
 		</form>

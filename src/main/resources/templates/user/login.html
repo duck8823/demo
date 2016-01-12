@@ -5,7 +5,7 @@
 
 	<head>
 		<!-- title -->
-		<title th:text="#{user.login.title}"></title>
+		<title th:text="#{user.login.title}">Login</title>
 		<!-- Charset -->
 		<meta charset="UTF-8" />
 	</head>
@@ -13,11 +13,11 @@
 	<!-- content -->
 	<th:block layout:fragment="content">
 		<form method="post" enctype="multipart/form-data" th:action="@{/login/}">
-			<h2 th:text="#{user.login.title}"></h2>
+			<h2 th:text="#{user.login.title}">Login</h2>
 			<input type="text" name="id" id="id" class="form-control" th:placeholder="#{user.login.id.placeholder}" />
 			<input type="password" name="password" id="password" class="form-control" th:placeholder="#{user.login.password.placeholder}" />
 			<!-- Submit Button -->
-			<button type="submit" class="btn btn-primary" th:text="#{user.login.title}"></button>
+			<button type="submit" class="btn btn-primary" th:text="#{user.login.title}">Submit</button>
 		</form>
 	</th:block>
 </html>

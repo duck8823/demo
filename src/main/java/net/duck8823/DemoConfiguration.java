@@ -11,6 +11,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.servlet.handler.MappedInterceptor;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
@@ -55,6 +56,10 @@ public class DemoConfiguration {
 		return jsonBuilder;
 	}
 
+	/**
+	 * 多言語用設定ファイル
+	 * @return
+	 */
 	@Bean
 	public ResourceBundleMessageSource messageSource() {
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
@@ -64,21 +69,24 @@ public class DemoConfiguration {
 	}
 
 	/**
-	 * 言語切り替え用インターセプタの設定
+	 * 言語切り替え
 	 * @return
 	 */
+	@Bean
+	public MappedInterceptor interceptor(){
+		return new MappedInterceptor(new String[]{"/**"}, localeChangeInterceptor());
+	}
 	@Bean
 	public LocaleChangeInterceptor localeChangeInterceptor() {
 		LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
 		localeChangeInterceptor.setParamName("lang");
 		return localeChangeInterceptor;
 	}
-
 	@Bean
-	public SessionLocaleResolver sessionLocaleResolver() {
+	public SessionLocaleResolver localeResolver() {
 		SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
 		sessionLocaleResolver.setDefaultLocale(Locale.getDefault());
-		return new SessionLocaleResolver();
+		return sessionLocaleResolver;
 	}
 
 }

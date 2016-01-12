@@ -11,7 +11,7 @@ public class QueryFactory {
 		Query query = new Query();
 		query.setQuery(keyword);
 		query.setResultType(Query.ResultType.mixed);
-		query.setCount(20);
+		query.setCount(50);
 		return query;
 	}
 }

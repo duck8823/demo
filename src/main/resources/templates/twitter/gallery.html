@@ -4,7 +4,7 @@
 	  layout:decorator="common/layout">
 
 	<head>
-		<title>Image gallery</title>
+		<title th:text="#{app.image.gallery}">Image gallery</title>
 		<meta charset="UTF-8" />
 
 		<link rel="stylesheet" th:href="@{//blueimp.github.io/Gallery/css/blueimp-gallery.min.css}" />
@@ -19,7 +19,7 @@
 	<body>
 		<!-- content -->
 		<th:block layout:fragment="content">
-			<h2>Image Gallery</h2>
+			<h2 th:text="#{app.image.gallery}">Image gallery</h2>
 			<br/>
 			<div id="blueimp-gallery" class="blueimp-gallery" data-use-bootstrap-modal="false" >
 				<!-- The container for the modal slides -->
