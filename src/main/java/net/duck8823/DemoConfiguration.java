@@ -2,6 +2,7 @@ package net.duck8823;
 
 import net.duck8823.model.photo.Photo;
 import net.duck8823.model.twitter.Filter;
+import net.duck8823.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,12 +14,8 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.handler.MappedInterceptor;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
-import org.thymeleaf.templateresolver.TemplateResolver;
 
 import javax.sql.DataSource;
-import java.util.Locale;
 
 /**
  * アプリケーション共通の設定
@@ -84,9 +81,7 @@ public class DemoConfiguration {
 	}
 	@Bean
 	public SessionLocaleResolver localeResolver() {
-		SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
-		sessionLocaleResolver.setDefaultLocale(Locale.getDefault());
-		return sessionLocaleResolver;
+		return new SessionLocaleResolver();
 	}
 
 }
