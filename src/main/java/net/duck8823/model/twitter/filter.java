@@ -32,8 +32,8 @@ public class Filter {
 	public Filter(){
 	}
 
-	public boolean matches(Status status){
-		return filterType.getTarget(status).matches(filterType.parseKeyword(keyword));
+	public boolean filter(Status status){
+		return filterType.filter(status, keyword);
 	}
 
 	@Override
