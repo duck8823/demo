@@ -9,23 +9,27 @@
 	</head>
 	<body>
 		<th:block layout:fragment="content">
-			<table class="table filters" th:fragment="filters">
-				<tr>
-					<td>#</td>
-					<td>Filter Type</td>
-					<td>Keyword</td>
-					<td></td>
-				</tr>
-				<tr th:each="filter,status : ${filters}">
-					<td th:text="${status.count}"></td>
-					<td th:text="${filter.filterType}"></td>
-					<td th:text="${filter.keyword}"></td>
-					<td>
-						<form name="filter-delete">
-							<button class="btn btn-default delete" th:attr="data-id=${filter.id}">削除</button>
-						</form>
-					</td>
-				</tr>
+			<table class="table table-striped table-hover filters" th:fragment="filters">
+				<thead>
+					<tr>
+						<td>#</td>
+						<td>Filter Type</td>
+						<td>Keyword</td>
+						<td></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="filter,status : ${filters}">
+						<td><span th:text="${status.count}"></span></td>
+						<td><span th:text="${filter.filterType}"></span></td>
+						<td><span th:text="${filter.keyword}"></span></td>
+						<td class="cell-right">
+							<form name="filter-delete">
+								<button class="btn btn-default delete" th:attr="data-id=${filter.id}">削除</button>
+							</form>
+						</td>
+					</tr>
+				</tbody>
 			</table>
 			<button class="btn btn-primary" data-toggle="modal" data-target="#addFilterForm" >追加</button>
 			<div class="modal" id="addFilterForm">

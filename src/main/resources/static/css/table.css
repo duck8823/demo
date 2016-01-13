@@ -1,0 +1,9 @@
+thead {
+	font-weight: bold;
+}
+.table>tbody>tr>td {
+	vertical-align: middle;
+}
+td.cell-right {
+	text-align: right;
+}
