@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<nav class="navbar navbar-default" th:fragment="menu">
+		<div class="container-fluid">
+			<!-- タイトル -->
+			<div class="navbar-header">
+				<a class="navbar-brand" th:href="@{/}" th:text="#{application.title}">Demo App.</a>
+				<!-- スマホ用のボタン -->
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav_target">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+			<div class="collapse navbar-collapse" id="nav_target">
+				<ul class="nav navbar-nav">
+					<!-- 画像ギャラリー -->
+					<li><a th:href="@{/gallery}" th:text="#{app.image.gallery}">Image gallery</a></li>
+					<!-- Twitter -->
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" >Twitter<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a th:href="@{/twitter/gallery}" th:text="#{app.image.gallery}">Image gallery</a></li>
+							<li><a th:href="@{/twitter/wordCloud}" th:text="#{app.word.cloud}">Word Cloud</a></li>
+							<li class="divider"></li>
+							<li><a th:href="@{//twitter.com/duck8823}">@duck8823</a></li>
+						</ul>
+					</li>
+					<!-- Facebook -->
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Facebook<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a th:href="@{/facebook/gallery}" th:text="#{app.image.gallery}">Image gallery</a></li>
+							<li><a th:href="@{/facebook/wordCloud}" th:text="#{app.word.cloud}">Word Cloud</a></li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+						<a href="?lang=en" th:if="${#locale.language == 'ja'}">English</a>
+						<a href="?lang=ja" th:if="${#locale.language == 'en'}">日本語</a>
+					</li>
+					<li><a th:href="@{/login/}">Login</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+</html>

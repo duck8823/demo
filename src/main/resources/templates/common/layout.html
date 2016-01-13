@@ -28,9 +28,10 @@
 		<script th:src="@{//code.jquery.com/jquery-1.11.3.min.js}"></script>
 		
 		<!-- Bootstrap CDN -->
-		<link rel="stylesheet" th:href="@{//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css}" />
-		<link rel="stylesheet" th:href="@{//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css}" />
 		<script th:src="@{//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+
+		<!-- Bootstrap theme -->
+		<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
 
 		<!-- scripts -->
 		<script th:src="@{/js/jquery.loader.js}" ></script>
@@ -51,7 +52,7 @@
 		<div id="fade"></div>
 		<section class="container-fluid">
 			<div class="row">
-				<header>
+				<header th:include="common/menu :: menu">
 					<h1 th:text="#{application.title}">Demo App.</h1>
 					<span class="locale">
 						<a href="?lang=en" th:if="${#locale.language == 'ja'}">English</a>
