@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 	<nav class="navbar navbar-default" th:fragment="menu">
 		<div class="container-fluid">
 			<!-- タイトル -->
@@ -15,13 +16,17 @@
 			<div class="collapse navbar-collapse" id="nav_target">
 				<ul class="nav navbar-nav">
 					<!-- 画像ギャラリー -->
-					<li><a th:href="@{/gallery}" th:text="#{app.image.gallery}">Image gallery</a></li>
+					<li><a th:href="@{/}" th:text="#{app.image.gallery}">Image gallery</a></li>
 					<!-- Twitter -->
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" >Twitter<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a th:href="@{/twitter/gallery}" th:text="#{app.image.gallery}">Image gallery</a></li>
 							<li><a th:href="@{/twitter/wordCloud}" th:text="#{app.word.cloud}">Word Cloud</a></li>
+							<th:block sec:authorize="hasRole('ROLE_ADMIN')">
+								<li class="divider"></li>
+								<li><a th:href="@{/manage/twitter/filter}">Filter</a></li>
+							</th:block>
 							<li class="divider"></li>
 							<li><a th:href="@{//twitter.com/duck8823}">@duck8823</a></li>
 						</ul>
@@ -40,7 +45,10 @@
 						<a href="?lang=en" th:if="${#locale.language == 'ja'}">English</a>
 						<a href="?lang=ja" th:if="${#locale.language == 'en'}">日本語</a>
 					</li>
-					<li><a th:href="@{/login/}">Login</a></li>
+					<li>
+						<a th:href="@{/login/}" th:if="${#httpServletRequest.remoteUser == null}">Login</a>
+						<a th:href="@{/login/}" th:unless="${#httpServletRequest.remoteUser == null}">Logout</a>
+					</li>
 				</ul>
 			</div>
 		</div>
