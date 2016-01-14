@@ -54,10 +54,10 @@
 		<div id="fade"></div>
 		<header class="header" th:include="common/menu :: menu">
 			<h1 th:text="#{application.title}">Demo App.</h1>
-					<span class="locale">
-						<a href="?lang=en" th:if="${#locale.language == 'ja'}">English</a>
-						<a href="?lang=ja" th:if="${#locale.language == 'en'}">日本語</a>
-					</span>
+			<span class="locale">
+				<a href="?lang=en" th:if="${#locale.language == 'ja'}">English</a>
+				<a href="?lang=ja" th:if="${#locale.language == 'en'}">日本語</a>
+			</span>
 		</header>
 		<section class="container-fluid">
 			<div class="row">
