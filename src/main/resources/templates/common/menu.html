@@ -46,8 +46,8 @@
 						<a href="?lang=ja" th:if="${#locale.language == 'en'}">日本語</a>
 					</li>
 					<li>
-						<a th:href="@{/login/}" th:if="${#httpServletRequest.remoteUser == null}">Login</a>
-						<a th:href="@{/login/}" th:unless="${#httpServletRequest.remoteUser == null}">Logout</a>
+						<a th:href="@{/login/}" sec:authorize="!isAuthenticated()">Login</a>
+						<a th:href="@{/logout/}" sec:authorize="isAuthenticated()">Logout</a>
 					</li>
 				</ul>
 			</div>
