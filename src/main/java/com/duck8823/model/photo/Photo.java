@@ -6,6 +6,7 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 import com.duck8823.util.ImageUtil;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
+import org.hibernate.annotations.Type;
 import org.hibernate.bytecode.internal.javassist.FieldHandled;
 import org.hibernate.bytecode.internal.javassist.FieldHandler;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,10 +36,11 @@ public class Photo implements FieldHandled {
 
 	@Lob
 	@Basic(fetch = FetchType.LAZY, optional = false)
+	@Type(type="org.hibernate.type.BinaryType")
 	@Column(name = "image")
 	private byte[] image;
 
-	@Column(name = "thumbnail", nullable = false, length = Integer.MAX_VALUE)
+	@Column(name = "thumbnail", nullable = false, length = 10485760)
 	private String thumbnail;
 
 	@Column(name = "take_date")
