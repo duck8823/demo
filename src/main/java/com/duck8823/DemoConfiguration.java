@@ -1,8 +1,8 @@
 package com.duck8823;
 
-import com.duck8823.web.servlet.i18n.SessionLocaleResolver;
 import com.duck8823.model.photo.Photo;
 import com.duck8823.model.twitter.Filter;
+import com.duck8823.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +30,7 @@ public class DemoConfiguration {
 	@Autowired
 	private DataSource dataSource;
 
+
 	/**
 	 * Hibernateの利用
 	 * @return
@@ -41,7 +42,7 @@ public class DemoConfiguration {
 		sessionFactory.setAnnotatedClasses(Photo.class, Filter.class);
 		return sessionFactory;
 	}
-	
+
 	/**
 	 * JSON出力をpretty形式にする
 	 * @return

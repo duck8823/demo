@@ -1,9 +1,13 @@
 package com.duck8823.aspect;
 
+import com.duck8823.service.MailService;
+import com.duck8823.util.MailBuilder;
 import lombok.extern.log4j.Log4j;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
@@ -15,9 +19,12 @@ import org.springframework.util.StopWatch;
 @Component
 public class LoggingAspect {
 
+	@Autowired
+	private MailService mailService;
+
 	/**
 	 * メソッドの処理時間を出力する
-	 * @param joinPoint
+	 * @param joinPoint ProceedingJoinPoint
 	 * @return
 	 * @throws Throwable
 	 */
@@ -30,5 +37,14 @@ public class LoggingAspect {
 		log.debug(joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName() + "() : " + stopWatch.getTotalTimeMillis() + "ms");
 
 		return result;
+	}
+
+	/**
+	 * 例外発生時にメールを送信する
+	 * @param th Throwable
+	 */
+	@AfterThrowing(value = "execution(* com.duck8823..*(..))", throwing = "th")
+	public void sendMail(Throwable th) {
+		mailService.sendMail(MailBuilder.getInstance().build(th));
 	}
 }
