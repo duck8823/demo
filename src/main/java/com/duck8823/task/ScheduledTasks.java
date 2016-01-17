@@ -37,7 +37,7 @@ public class ScheduledTasks {
 	}
 
 	@Transactional
-	@Scheduled(cron = "0 */15 * * * *", zone = "Asia/Tokyo")
+	@Scheduled(cron = "0 */5 * * * *", zone = "Asia/Tokyo")
 	public void retweet() throws TwitterException, IOException, URISyntaxException {
 		log.debug("フォロワーの水族館写真をリツイート");
 		botTweetService.retweet();
