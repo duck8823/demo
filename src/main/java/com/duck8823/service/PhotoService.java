@@ -28,8 +28,7 @@ public class PhotoService {
 	}
 
 	public Photos list() {
-		throw new RuntimeException("test");
-//		return photoRepository.list();
+		return photoRepository.list();
 	}
 
 	public void save(Photo photo){
