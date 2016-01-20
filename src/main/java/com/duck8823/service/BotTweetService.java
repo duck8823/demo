@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import twitter4j.*;
+import twitter4j.api.UsersResources;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -78,11 +79,16 @@ public class BotTweetService {
 	}
 
 	public void followBack() throws TwitterException {
+		int cnt = 0;
 		Set<Long> followIds = getFollowIds();
 		for(Long id : followIds){
+			if(twitter.showUser(id).isFollowRequestSent()) {
+				continue;
+			}
 			twitter.createFriendship(id);
+			cnt++;
 		}
-		log.debug(followIds.size() + " 人のユーザをフォローしました.");
+		log.debug(cnt + " 人のユーザをフォローしました.");
 	}
 
 	public void unfollow() throws TwitterException {

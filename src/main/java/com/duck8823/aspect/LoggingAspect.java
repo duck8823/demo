@@ -1,7 +1,7 @@
 package com.duck8823.aspect;
 
 import com.duck8823.service.MailService;
-import com.duck8823.util.MailBuilder;
+import com.duck8823.context.mail.MailBuilder;
 import lombok.extern.log4j.Log4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -21,6 +21,9 @@ public class LoggingAspect {
 
 	@Autowired
 	private MailService mailService;
+
+	@Autowired
+	private MailBuilder mailBuilder;
 
 	/**
 	 * メソッドの処理時間を出力する
@@ -45,6 +48,6 @@ public class LoggingAspect {
 	 */
 	@AfterThrowing(value = "execution(* com.duck8823..*(..))", throwing = "th")
 	public void sendMail(Throwable th) {
-		mailService.sendMail(MailBuilder.getInstance().build(th));
+		mailService.sendMail(mailBuilder.build(th));
 	}
 }
