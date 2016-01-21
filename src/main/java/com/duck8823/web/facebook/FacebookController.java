@@ -5,7 +5,6 @@ import com.duck8823.model.facebook.FacebookAuthentication;
 import com.duck8823.service.FacebookService;
 import facebook4j.Facebook;
 import facebook4j.FacebookException;
-import facebook4j.FacebookFactory;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,17 +33,14 @@ public class FacebookController {
 
 	@RequestMapping("login")
 	public String login(UriComponentsBuilder uriComponentsBuilder) {
-		Facebook facebook = new FacebookFactory().getInstance();
-		authentication.setFacebook(facebook);
 		String callbackURL = uriComponentsBuilder.path("/facebook/callback").build().toString();
-		return "redirect:" + facebook.getOAuthAuthorizationURL(callbackURL);
+		return "redirect:" + authentication.getFacebook().getOAuthAuthorizationURL(callbackURL);
 	}
 
 	@RequestMapping("callback")
 	public String callback(@RequestParam("code") String oauthCode) throws FacebookException {
 		Facebook facebook = authentication.getFacebook();
 		facebook.getOAuthAccessToken(oauthCode);
-		authentication.setLogin(true);
 		return "redirect:" + authentication.getReferer();
 	}
 

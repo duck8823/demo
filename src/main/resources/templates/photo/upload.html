@@ -17,6 +17,15 @@
 				<input type="file" name="files" multiple="multiple" class="form-control" />
 				<!-- Submit Button -->
 				<button type="submit" class="btn btn-primary">アップロード</button>
+
+				<span class="btn-facebook-login">
+					<a th:href="@{/admin/facebook/auth}" class="btn btn-default login" th:unless="${authentication.login}" th:fragment="btn-facebook">
+						facebook login
+					</a>
+					<button type="button" class="btn btn-default logout" th:if="${authentication.login}" th:fragment="btn-facebook">
+						facebook logout
+					</button>
+				</span>
 			</form>
 		</th:block>
 	</body>
