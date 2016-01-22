@@ -59,7 +59,7 @@ public class UploadController {
 			myFacebookService.post(new Post(photos.size() + " 枚の写真をアップロードしました。\nby http://www.duck8823.com\n", photos));
 		}
 
-		Tweet tweet = new Tweet(photos.size() + " 枚の写真をアップロードしました。");
+		Tweet tweet = new Tweet(photos.size() + " 枚の写真をアップロードしました。\nhttp://www.duck8823.com");
 		tweet.touch();
 		botTweetService.post(tweet);
 		return "photo/upload";

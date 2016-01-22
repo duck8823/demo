@@ -23,11 +23,16 @@ public class MyFacebookService {
 	private Facebook facebook;
 
 	public void post(Post post) throws FacebookException {
+		PrivacyBuilder privacyBuilder = new PrivacyBuilder();
+		privacyBuilder.setValue(PrivacyType.ALL_FRIENDS);
+		PrivacyParameter privacy = privacyBuilder.build();
+
 		String date = DateUtils.format(new Date(System.currentTimeMillis()), "yyyy/MM/dd", Locale.getDefault());
 		AlbumUpdate albumUpdate = new AlbumUpdate(date, post.getMessage());
+		albumUpdate.setPrivacy(privacy);
 		String albumId = facebook.createAlbum(albumUpdate);
 		for(Photo photo : post.getPhotos()) {
-			facebook.addAlbumPhoto(albumId, new Media("album photo", new ByteArrayInputStream(photo.getImage())), DateUtils.format(photo.getTakeDate(), "yyyy/MM/dd hh:mm", Locale.getDefault()));
+			facebook.addAlbumPhoto(albumId, new Media("album photo", new ByteArrayInputStream(photo.getImage())), DateUtils.format(photo.getTakeDate(), "yyyy/MM/dd HH:mm", Locale.getDefault()));
 		}
 	}
 }

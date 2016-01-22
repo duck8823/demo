@@ -44,10 +44,10 @@ public class LoggingAspect {
 
 	/**
 	 * 例外発生時にメールを送信する
-	 * @param th Throwable
+	 * @param t Throwable
 	 */
-	@AfterThrowing(value = "execution(* com.duck8823..*(..))", throwing = "th")
-	public void sendMail(Throwable th) {
-		mailService.sendMail(mailBuilder.build(th));
+	@AfterThrowing(value = "execution(* com.duck8823..*(..))", throwing = "t")
+	public void sendMail(Throwable t) {
+		mailService.sendMail(mailBuilder.build(t));
 	}
 }
