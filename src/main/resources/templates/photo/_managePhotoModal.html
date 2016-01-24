@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<th:block th:fragment="managePhotoModal">
+		<div class="modal" id="managePhoto">
+			<div class="modal-dialog">
+				<form method="POST" th:action="@{/manage/photo/place/update}">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" >Manage Photo</h4>
+						</div>
+						<div class="modal-body container-fluid">
+							<div class="fluid-row">
+								<div class="col-sm-4 image">
+									<h3 th:text="${#calendars.format(photo.takeDate,'yyyy.MM.dd')}"></h3>
+									<img th:src="*{'data:image/jpeg;base64,'+photo.thumbnail}" th:alt="${#calendars.format(photo.takeDate,'yyyy.MM.dd')}" title="" />
+								</div>
+								<div class="fluid-row col-sm-8">
+									<input type="hidden" name="id" th:value="${photo.id}" readonly="readonly" />
+									<div class="col-sm-12">
+										<label>
+											<h4>場所</h4>
+											<select name="place" class="form-control selectPlace" th:fragment="selectPlace">
+												<option></option>
+												<option th:each="place : ${places}" th:text="${place.name}" th:value="${place.id}" th:selected="${photo.place != null and photo.place.id == place.id}"></option>
+											</select>
+										</label>
+									</div>
+									<div class="col-sm-12">
+										<label>
+											<h4>コメント</h4>
+											<textarea name="comment" class="form-control" th:text="${photo.comment}"></textarea>
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary submit" >Submit</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</th:block>
+</html>

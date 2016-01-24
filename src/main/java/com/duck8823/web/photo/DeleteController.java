@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Created by maeda on 2015/12/16.
  */
 @Transactional
-@RequestMapping("delete")
+@RequestMapping("manage/photo/delete")
 @Controller
 public class DeleteController {
 
@@ -30,7 +30,7 @@ public class DeleteController {
 	}
 
 	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable Long id) {
 		Photo photo = photoService.findById(id).get();
 		photoService.delete(photo);

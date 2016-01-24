@@ -46,9 +46,6 @@ public class Filter {
 
 	@Override
 	public int hashCode() {
-		if(getId() == null){
-			return 0;
-		}
-		return getId().intValue();
+		return getId() != null ? getId().intValue() : 0;
 	}
 }

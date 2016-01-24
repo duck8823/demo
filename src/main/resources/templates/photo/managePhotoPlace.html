@@ -4,27 +4,31 @@
 	  layout:decorator="common/layout">
 
 	<head>
-		<title>Delete Photo</title>
+		<title>Manage Photo</title>
 		<meta charset="UTF-8" />
 
 		<link rel="stylesheet" th:href="@{/css/justifiedGallery.min.css}" />
 		<link rel="stylesheet" th:href="@{/css/photo.manage.css}" />
 
 		<script th:src="@{/js/jquery.justifiedGallery.min.js}"></script>
-		<script th:src="@{/js/jquery.delete.js}" ></script>
+		<script th:src="@{/js/jquery.photo.manage.js}" ></script>
 		<script th:src="@{/js/jquery.gallery.js}" ></script>
 	</head>
 
 	<body>
 		<!-- content -->
 		<th:block layout:fragment="content">
-			<h2 th:text="#{photo.delete.title}"></h2>
+			<h2>Manage Photo</h2>
+			<th:block th:include="photo/_managePlaceModal :: managePlaceModal">
+			</th:block>
 			<div id="links">
 				<div class="photo" th:attr="data-id=${photo.id}" th:each="photo : ${photos}">
 					<img th:src="*{'data:image/jpeg;base64,'+photo.thumbnail}" th:alt="${#calendars.format(photo.takeDate,'yyyy.MM.dd')}" />
-					<div class="link">
-						<span class="glyphicon glyphicon-ban-circle" ></span>
+					<div class="link" data-toggle="modal" data-target="#managePhoto" th:attr="data-photo-id=${photo.id}">
+						<span class="glyphicon glyphicon-edit" ></span>
 					</div>
+					<th:block th:include="photo/_managePhotoModal :: managePhotoModal">
+					</th:block>
 				</div>
 			</div>
 

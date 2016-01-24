@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Base64;
 import java.util.Date;
 
@@ -23,7 +24,7 @@ import java.util.Date;
 @Entity
 @Table(name = "photo")
 @Data
-public class Photo implements FieldHandled {
+public class Photo implements Serializable, FieldHandled {
 
 	@Transient
 	private FieldHandler fieldHandler;
@@ -37,7 +38,7 @@ public class Photo implements FieldHandled {
 	@Lob
 	@Basic(fetch = FetchType.LAZY, optional = false)
 	@Type(type="org.hibernate.type.BinaryType")
-	@Column(name = "image")
+	@Column(name = "image", length = Integer.MAX_VALUE)
 	private byte[] image;
 
 	@Column(name = "thumbnail", nullable = false, length = 10485760)
@@ -49,14 +50,14 @@ public class Photo implements FieldHandled {
 	@Column(name = "comment")
 	private String comment;
 
+	@ManyToOne
+	@JoinColumn(name = "place_id")
+	private Place place;
+
 	// for hibernate
 	public Photo(){
 	}
 
-	public Photo(Long id){
-		this.id = id;
-	}
-	
 	public Photo(MultipartFile file) {
 		try {
 			Directory directory = JpegMetadataReader.readMetadata(file.getInputStream()).getDirectory(ExifIFD0Directory.class);

@@ -25,7 +25,7 @@ import twitter4j.TwitterException;
  * Created by maeda on 2015/12/12.
  */
 @Transactional
-@RequestMapping
+@RequestMapping("manage/photo/upload")
 @Controller
 public class UploadController {
 
@@ -42,13 +42,13 @@ public class UploadController {
 	@Autowired
 	private FacebookAuthentication authentication;
 
-	@RequestMapping(path = "upload", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	public String index(Model model){
 		model.addAttribute("authentication", authentication);
 		return "photo/upload";
 	}
 
-	@RequestMapping(path = "upload", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
 	public String upload(Model model, UploadFiles files) throws TwitterException, FacebookException {
 		model.addAttribute("authentication", authentication);
 
@@ -65,23 +65,4 @@ public class UploadController {
 		return "photo/upload";
 	}
 
-	@RequestMapping("admin/facebook/auth")
-	public String auth(UriComponentsBuilder uriComponentsBuilder) {
-		String callbackURL = uriComponentsBuilder.path("admin/facebook/callback").build().toString();
-		return "redirect:" + authentication.getFacebook().getOAuthAuthorizationURL(callbackURL);
-	}
-
-	@RequestMapping("admin/facebook/callback")
-	public String callback(@RequestParam("code") String oauthCode) throws FacebookException {
-		Facebook facebook = authentication.getFacebook();
-		facebook.getOAuthAccessToken(oauthCode);
-		return "redirect:/upload";
-	}
-
-	@RequestMapping("admin/facebook/logout")
-	public String logout(Model model) {
-		model.addAttribute("authentication", authentication);
-		authentication.logout();
-		return "photo/upload :: btn-facebook";
-	}
 }

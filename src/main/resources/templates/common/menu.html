@@ -17,6 +17,16 @@
 				<ul class="nav navbar-nav">
 					<!-- 画像ギャラリー -->
 					<li><a th:href="@{/}" th:text="#{app.image.gallery}">Image gallery</a></li>
+					<!-- Photo -->
+					<li class="dropdown" sec:authorize="hasRole('ROLE_ADMIN')">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" >Photo<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a th:href="@{/manage/photo/upload}" >Upload</a></li>
+							<li><a th:href="@{/manage/photo/place}" >Edit Place</a></li>
+							<li><a th:href="@{/manage/photo/rotate}" >Rotate</a></li>
+							<li><a th:href="@{/manage/photo/delete}" >Delete</a></li>
+						</ul>
+					</li>
 					<!-- Twitter -->
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" >Twitter<span class="caret"></span></a>

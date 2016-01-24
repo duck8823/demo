@@ -1,3 +1,9 @@
+.modal div.image {
+	height: 100%;
+	text-align: center;
+	vertical-align: middle;
+}
+
 #links div.caption {
 	display: none !important;
 }
@@ -32,6 +38,7 @@
 }
 
 #links span.glyphicon {
+	color: #cccccc;
 	font-size: 20px;
 	top: 40%;
 	left: 40%;

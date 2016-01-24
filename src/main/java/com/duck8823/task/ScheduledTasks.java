@@ -2,16 +2,20 @@ package com.duck8823.task;
 
 import com.duck8823.service.BotTweetService;
 import lombok.extern.log4j.Log4j;
+import com.duck8823.model.photo.Photo;
 import com.duck8823.model.twitter.Tweet;
 import com.duck8823.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.thymeleaf.util.DateUtils;
 import twitter4j.TwitterException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Locale;
 
 
 /**
@@ -31,7 +35,15 @@ public class ScheduledTasks {
 	@Scheduled(cron = "0 0 * * * *", zone = "Asia/Tokyo")
 	public void tweet() throws TwitterException {
 		log.info("Twitter 自動投稿");
-		Tweet tweet = new Tweet("", photoService.random().get());
+		Photo photo = photoService.random().get();
+
+		String message = "";
+		if(photo.getPlace() != null && !StringUtils.isEmpty(photo.getPlace().getName())){
+			message += "【撮影場所】" + photo.getPlace().getName() + "\n";
+		}
+		message += "【撮影日時】" + DateUtils.format(photo.getTakeDate(), "yyyy/MM/dd HH:mm", Locale.getDefault()) + "\n";
+
+		Tweet tweet = new Tweet(message, photo);
 		tweet.touch();
 		botTweetService.post(tweet);
 	}

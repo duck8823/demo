@@ -18,7 +18,7 @@ import java.io.IOException;
  * Created by maeda on 2015/12/16.
  */
 @Transactional
-@RequestMapping("rotate")
+@RequestMapping("manage/photo/rotate")
 @Controller
 public class RotateController {
 

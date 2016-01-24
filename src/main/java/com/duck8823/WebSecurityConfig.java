@@ -18,10 +18,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Value("${user.id}")
+	@Value("${admin.id}")
 	private String id;
 
-	@Value("${user.password}")
+	@Value("${admin.password}")
 	private String password;
 
 	@Autowired
@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity web) throws Exception {
 		web.authorizeRequests()
-				.antMatchers("/", "/login/", "/twitter/**", "/facebook/**", "/photo/**", "/css/**", "/js/**", "/img/**")
+				.antMatchers("/", "/login/", "/h2-console/**","/fonts/**", "/twitter/**", "/facebook/**", "/photo/**", "/css/**", "/js/**", "/img/**")
 				.permitAll()
 				.anyRequest()
 				.authenticated()
@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.formLogin()
 				.loginPage("/login/")
 				.loginProcessingUrl("/login/")
-				.defaultSuccessUrl("/upload/")
+				.defaultSuccessUrl("/manage/photo/upload/")
 				.failureUrl("/login/")
 				.usernameParameter("id")
 				.passwordParameter("password")

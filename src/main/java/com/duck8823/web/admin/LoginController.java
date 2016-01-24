@@ -1,4 +1,4 @@
-package com.duck8823.web.user;
+package com.duck8823.web.admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +13,7 @@ public class LoginController {
 
 	@RequestMapping("login")
 	public String login(){
-		return "user/login";
+		return "admin/login";
 	}
 
 }

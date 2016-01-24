@@ -12,7 +12,7 @@ import java.util.Optional;
  * Created by maeda on 2016/01/11.
  */
 @Service
-public class FilterService {
+public class FilterService extends DataSourceService {
 
 	@Autowired
 	private FilterRepository filterRepository;

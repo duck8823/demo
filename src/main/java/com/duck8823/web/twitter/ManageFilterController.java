@@ -51,7 +51,7 @@ public class ManageFilterController {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, path = "delete/{id}")
-	public String delete(Model model, @PathVariable Long id) {
+	public synchronized String delete(Model model, @PathVariable Long id) {
 		Filter filter = filterService.findById(id).get();
 		filterService.delete(filter);
 		filters.remove(filter);

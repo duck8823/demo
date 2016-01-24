@@ -13,7 +13,7 @@ import java.util.Optional;
  * Created by maeda on 2015/12/12.
  */
 @Service
-public class PhotoService {
+public class PhotoService extends DataSourceService {
 
 	@Autowired
 	private PhotoRepository photoRepository;

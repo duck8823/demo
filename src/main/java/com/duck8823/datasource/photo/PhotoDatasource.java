@@ -22,7 +22,10 @@ public class PhotoDatasource extends AbstractDatasource implements PhotoReposito
 
 	@Override
 	public Optional<Photo> findById(Long id) {
-		return Optional.ofNullable(Photo.class.cast(getSession().createCriteria(Photo.class).setFetchMode(Photo_.image.getName(), FetchMode.JOIN).add(Restrictions.eq(Photo_.id.getName(), id)).uniqueResult()));
+		return Optional.ofNullable(Photo.class.cast(getSession().createCriteria(Photo.class)
+				.setFetchMode(Photo_.image.getName(), FetchMode.JOIN)
+				.add(Restrictions.eq(Photo_.id.getName(), id))
+				.uniqueResult()));
 	}
 
 	@Override
@@ -34,7 +37,9 @@ public class PhotoDatasource extends AbstractDatasource implements PhotoReposito
 
 	@Override
 	public Photos list() {
-		return new Photos(getSession().createCriteria(Photo.class).addOrder(Order.desc(Photo_.takeDate.getName())).list());
+		return new Photos(getSession().createCriteria(Photo.class)
+				.addOrder(Order.desc(Photo_.takeDate.getName()))
+				.list());
 	}
 
 	@Override
