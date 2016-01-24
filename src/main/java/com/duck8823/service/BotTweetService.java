@@ -1,19 +1,15 @@
 package com.duck8823.service;
 
-import lombok.extern.log4j.Log4j;
 import com.duck8823.context.twitter.QueryFactory;
 import com.duck8823.model.twitter.FilterRepository;
 import com.duck8823.model.twitter.Filters;
 import com.duck8823.model.twitter.Tweet;
 import com.duck8823.util.ImageUtil;
-import org.eclipse.collections.api.factory.set.MutableSetFactory;
-import org.eclipse.collections.impl.factory.Sets;
-import org.eclipse.collections.impl.set.mutable.MutableSetFactoryImpl;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import twitter4j.*;
-import twitter4j.api.UsersResources;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -135,7 +131,7 @@ public class BotTweetService {
 	}
 
 	private Set<Long> getFriendIds() throws TwitterException {
-		Set<Long> friends = new MutableSetFactoryImpl().empty();
+		Set<Long> friends = new HashSet<>();
 		IDs ids = twitter.getFriendsIDs(twitter.getId(), -1L);
 		while(true){
 			for(Long id : ids.getIDs()){
