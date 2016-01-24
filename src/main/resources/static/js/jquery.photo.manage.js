@@ -28,7 +28,9 @@
 			selector : "button.delete"
 		})
 
-		$("#links .link").updateSelectPlace();
+		$("#links .link").each(function(){
+			$(this).updateSelectPlace();
+		})
 
 	})
 
