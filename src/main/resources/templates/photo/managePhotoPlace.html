@@ -24,7 +24,7 @@
 			<div id="links">
 				<div class="photo" th:attr="data-id=${photo.id}" th:each="photo : ${photos}">
 					<img th:src="*{'data:image/jpeg;base64,'+photo.thumbnail}" th:alt="${#calendars.format(photo.takeDate,'yyyy.MM.dd')}" />
-					<div class="link" data-toggle="modal" data-target="#managePhoto" th:attr="data-photo-id=${photo.id}">
+					<div class="link" data-toggle="modal" th:attr="data-target=*{'#managePhoto-'+photo.id},data-photo-id=${photo.id}">
 						<span class="glyphicon glyphicon-edit" ></span>
 					</div>
 					<th:block th:include="photo/_managePhotoModal :: managePhotoModal">

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 	<th:block th:fragment="managePhotoModal">
-		<div class="modal" id="managePhoto">
+		<div class="modal" th:id="*{'managePhoto-'+photo.id}">
 			<div class="modal-dialog">
 				<form method="POST" th:action="@{/manage/photo/place/update}">
 					<div class="modal-content">
