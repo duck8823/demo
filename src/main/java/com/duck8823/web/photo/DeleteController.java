@@ -1,6 +1,5 @@
 package com.duck8823.web.photo;
 
-import com.duck8823.model.photo.Photo;
 import com.duck8823.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,7 +31,6 @@ public class DeleteController {
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable Long id) {
-		Photo photo = photoService.findById(id).get();
-		photoService.delete(photo);
+		photoService.delete(id);
 	}
 }

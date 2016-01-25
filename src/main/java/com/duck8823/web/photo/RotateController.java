@@ -34,8 +34,6 @@ public class RotateController {
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "{id}", method = RequestMethod.POST)
 	public void rotate(@PathVariable Long id) throws IOException {
-		Photo photo = photoService.findById(id).get();
-		photo.rotate();
-		photoService.save(photo);
+		photoService.rotate(id);
 	}
 }

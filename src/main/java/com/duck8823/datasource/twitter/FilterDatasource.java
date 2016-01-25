@@ -4,11 +4,10 @@ import com.duck8823.datasource.AbstractDatasource;
 import com.duck8823.model.twitter.Filter;
 import com.duck8823.model.twitter.FilterRepository;
 import com.duck8823.model.twitter.Filter_;
+import com.duck8823.model.twitter.Filters;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -23,8 +22,8 @@ public class FilterDatasource extends AbstractDatasource implements FilterReposi
 	}
 
 	@Override
-	public List<Filter> list() {
-		return Collections.unmodifiableList(getSession().createCriteria(Filter.class).list());
+	public Filters list() {
+		return new Filters(getSession().createCriteria(Filter.class).list());
 	}
 
 	@Override

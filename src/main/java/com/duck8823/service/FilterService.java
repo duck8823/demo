@@ -2,10 +2,10 @@ package com.duck8823.service;
 
 import com.duck8823.model.twitter.Filter;
 import com.duck8823.model.twitter.FilterRepository;
+import com.duck8823.model.twitter.Filters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -21,15 +21,18 @@ public class FilterService extends DataSourceService {
 		return filterRepository.findById(id);
 	}
 
-	public List<Filter> list() {
+	public Filters list() {
 		return filterRepository.list();
 	}
 
-	public void save(Filter filter) {
+	public void save(Filter filter, Filters filters) {
 		filterRepository.save(filter);
+		filters.add(filter);
 	}
 
-	public void delete(Filter filter) {
+	public void delete(Long id, Filters filters) {
+		Filter filter = findById(id).get();
 		filterRepository.delete(filter);
+		filters.remove(filter);
 	}
 }

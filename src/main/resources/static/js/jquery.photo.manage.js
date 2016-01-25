@@ -28,13 +28,42 @@
 			selector : "button.delete"
 		})
 
+		$("form[name='manage-photo']").each(function(){
+			$(this).update();
+		})
+
 		$("#links .link").each(function(){
-			$(this).updateSelectPlace();
+			$(this).modalOpen();
 		})
 
 	})
 
-	$.fn.updateSelectPlace = function(options) {
+	$.fn.update = function(options) {
+		var settings = $.extend({
+			"selector" : "button.submit"
+		}, options)
+
+		var this$ = this;
+
+		this.find(settings.selector).on("click", function(){
+			var data = this$.serialize();
+			$.ajax({
+				url : app.CONTEXT_ROOT + "/manage/photo/place/addInfo",
+				data : data,
+				type : "POST",
+				cache : false,
+			}).done(function(){
+				console.log("success");
+				this$.parents(".modal").modal("hide");
+			}).fail(function(){
+				console.log("fail")
+			}).always(function(data){
+
+			})
+		})
+	}
+
+	$.fn.modalOpen = function(options) {
 		var settings = $.extend({
 			"selector" : "select.selectPlace"
 		}, options)

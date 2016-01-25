@@ -1,6 +1,5 @@
 package com.duck8823.model.twitter;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -10,7 +9,7 @@ public interface FilterRepository {
 
 	Optional<Filter> findById(Long id);
 
-	List<Filter> list();
+	Filters list();
 
 	void save(Filter filter);
 

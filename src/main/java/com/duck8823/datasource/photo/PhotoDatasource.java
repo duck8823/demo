@@ -29,13 +29,6 @@ public class PhotoDatasource extends AbstractDatasource implements PhotoReposito
 	}
 
 	@Override
-	public Optional<Photo> random() {
-		List<Object> lists = getSession().createCriteria(Photo.class).list();
-		Photo photo = Photo.class.cast(lists.get(new Random().nextInt(lists.size())));
-		return findById(photo.getId());
-	}
-
-	@Override
 	public Photos list() {
 		return new Photos(getSession().createCriteria(Photo.class)
 				.addOrder(Order.desc(Photo_.takeDate.getName()))

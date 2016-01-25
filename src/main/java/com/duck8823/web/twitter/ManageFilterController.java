@@ -32,7 +32,7 @@ public class ManageFilterController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String index(Model model){
-		filters = new Filters(filterService.list());
+		filters = filterService.list();
 		model.addAttribute("filters", filters);
 		model.addAttribute("filterTypes", FilterType.values());
 		return "twitter/manageFilter";
@@ -41,20 +41,16 @@ public class ManageFilterController {
 	@RequestMapping(method = RequestMethod.POST, path = "add")
 	public String add(Model model, @Validated Filter filter, BindingResult result) {
 		if(result.hasErrors()){
-			log.warn("入力値にエラーがあります.");
-			return "redirect:/";
+			throw new IllegalStateException("入力値に問題があります.");
 		}
-		filterService.save(filter);
-		filters.add(filter);
+		filterService.save(filter, filters);
 		model.addAttribute("filters", filters);
 		return "twitter/manageFilter :: filters";
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, path = "delete/{id}")
 	public synchronized String delete(Model model, @PathVariable Long id) {
-		Filter filter = filterService.findById(id).get();
-		filterService.delete(filter);
-		filters.remove(filter);
+		filterService.delete(id, filters);
 		model.addAttribute("filters", filters);
 		return "twitter/manageFilter :: filters";
 	}

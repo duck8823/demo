@@ -1,13 +1,13 @@
 package com.duck8823.model.photo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
  * Created by maeda on 2015/12/12.
  */
-public class Photos extends LinkedHashSet<Photo> {
+public class Photos extends ArrayList<Photo> {
 
 	public Photos(List<Photo> photos){
 		super();

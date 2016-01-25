@@ -9,8 +9,6 @@ public interface PhotoRepository {
 
 	Optional<Photo> findById(Long id);
 
-	Optional<Photo> random();
-
 	Photos list();
 
 	void save(Photo photo);

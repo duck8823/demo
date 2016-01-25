@@ -21,8 +21,8 @@ public class PlaceDatasource extends AbstractDatasource implements PlaceReposito
 	}
 
 	@Override
-	public List<Place> list() {
-		return getSession().createCriteria(Place.class).list();
+	public Places list() {
+		return new Places(getSession().createCriteria(Place.class).list());
 	}
 
 	@Override
