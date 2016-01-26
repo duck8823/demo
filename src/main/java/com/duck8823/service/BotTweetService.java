@@ -81,7 +81,7 @@ public class BotTweetService {
 		int cnt = 0;
 		Set<Long> followIds = getFollowIds();
 		for(Long id : followIds){
-			if(twitter.showUser(id).isFollowRequestSent()) {
+			if(twitter.showUser(id).isFollowRequestSent() || twitter.showUser(id).isProtected()) {
 				continue;
 			}
 			twitter.createFriendship(id);
