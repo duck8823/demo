@@ -6,7 +6,9 @@
 		$("#links").justifiedGallery({
 			rowHeight: 75,
 			lastRow: 'nojustify',
-			margins: 2
+			margins: 2,
+			refreshSensitivity: 50
 		});
+
 	})
 }) (jQuery);
