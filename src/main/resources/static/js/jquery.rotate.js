@@ -27,7 +27,7 @@
 			$("#fade").css("display", "block");
 			var id = $(this).parent(".photo").data("id");
 			$.ajax({
-				url : app.CONTEXT_ROOT + "/rotate/" + id,
+				url : app.CONTEXT_ROOT + "/manage/photo/rotate/" + id,
 				type : "POST",
 				cache : false,
 			}).done(function(){
@@ -41,11 +41,6 @@
 			}).fail(function(){
 				console.log("fail")
 			}).always(function(){
-				$("#links").justifiedGallery({
-					rowHeight: 75,
-					lastRow: 'nojustify',
-					margins: 2
-				});
 				$("#loader").css("display", "none");
 				$("#fade").css("display", "none");
 			})
