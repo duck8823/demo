@@ -37,7 +37,9 @@ public class LoggingAspect {
 		stopWatch.start();
 		Object result = joinPoint.proceed();
 		stopWatch.stop();
-		log.debug(joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName() + "() : " + stopWatch.getTotalTimeMillis() + "ms");
+		if(joinPoint.getSignature().getDeclaringTypeName().matches("^com\\.duck8823\\..*?")) {
+			log.debug(joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName() + "() : " + stopWatch.getTotalTimeMillis() + "ms");
+		}
 
 		return result;
 	}
