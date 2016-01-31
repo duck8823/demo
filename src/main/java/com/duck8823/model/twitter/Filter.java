@@ -32,6 +32,11 @@ public class Filter {
 	public Filter(){
 	}
 
+	public Filter(FilterType filterType, String keyword) {
+		this.filterType = filterType;
+		this.keyword = keyword;
+	}
+
 	public boolean filter(Status status){
 		return filterType.filter(status, keyword);
 	}

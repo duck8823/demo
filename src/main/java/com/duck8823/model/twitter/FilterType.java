@@ -24,7 +24,7 @@ public enum FilterType {
 		@Override
 		boolean filter(Status status, String keyword){
 			Pattern pattern = Pattern.compile("^" + StringEscapeUtils.escapeJava(keyword) + "$");
-			Matcher matcher = pattern.matcher(status.getText());
+			Matcher matcher = pattern.matcher(status.getUser().getScreenName());
 			return matcher.matches();
 		}
 	},
