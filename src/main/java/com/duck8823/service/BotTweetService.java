@@ -63,6 +63,7 @@ public class BotTweetService {
 		int cnt = 0;
 		Filters filters = filterRepository.list();
 		for(Status status : twitter.search(QueryFactory.create("水族館")).getTweets()){
+			log.debug(status.getUser().getScreenName() + "(" +status.getUser().getId() + ") : " + twitter.getOAuthAccessToken().getScreenName() + "(" + twitter.getOAuthAccessToken().getUserId() + ")");
 			if(!containsPhoto(status.getMediaEntities()) || filter(filters, status) || status.getUser().getId() == twitter.getOAuthAccessToken().getUserId() || twitter.showStatus(status.getId()).isFavorited()){
 				continue;
 			}
