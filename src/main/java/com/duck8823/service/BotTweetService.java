@@ -51,7 +51,7 @@ public class BotTweetService {
 		int cnt = 0;
 		Filters filters = new Filters(filterRepository.list());
 		for(Status status : twitter.getHomeTimeline()){
-			if(status.getText() != null && status.getText().matches(".*水族館.*") && !filter(filters, status) && containsPhoto(status.getMediaEntities()) && !status.isRetweeted() && !detectFaces(status.getMediaEntities())){
+			if(status.getText() != null && status.getText().matches(".*水族館.*") && !filters.filter(status) && containsPhoto(status.getMediaEntities()) && !status.isRetweeted() && !detectFaces(status.getMediaEntities())){
 				twitter.retweetStatus(status.getId());
 				cnt++;
 			}
@@ -62,19 +62,32 @@ public class BotTweetService {
 	public void favorite() throws TwitterException {
 		int cnt = 0;
 		Filters filters = filterRepository.list();
-		for(Status status : twitter.search(QueryFactory.create("水族館")).getTweets()){
-			log.debug(status.getUser().getScreenName() + "(" +status.getUser().getId() + ") : " + twitter.getOAuthAccessToken().getScreenName() + "(" + twitter.getOAuthAccessToken().getUserId() + ")");
-			if(!containsPhoto(status.getMediaEntities()) || filter(filters, status) || status.getUser().getId() == twitter.getOAuthAccessToken().getUserId() || twitter.showStatus(status.getId()).isFavorited()){
-				continue;
-			}
-			try {
-				twitter.createFavorite(status.getId());
-				cnt++;
-			} catch (TwitterException e){
-				log.warn("このツイートはお気に入りに登録できません. : " + e.getMessage() + " (@" + status.getUser().getScreenName() + ")");
-				break;
-			}
-		}
+		QueryResult result = twitter.search(QueryFactory.create("水族館"));
+		result.getTweets().stream()
+				.filter(status -> !containsPhoto(status.getMediaEntities()))
+				.filter(filters::filter)
+				.filter(status -> {
+					try {
+						log.debug("自身のツイートです.");
+						return status.getUser().getId() == twitter.getOAuthAccessToken().getUserId();
+					} catch (TwitterException e) {
+						return false;
+					}
+				})
+				.filter(status -> {
+					try {
+						return twitter.showStatus(status.getId()).isFavorited();
+					} catch (TwitterException e) {
+						return false;
+					}
+				})
+				.forEach(status -> {
+					try {
+						twitter.createFavorite(status.getId());
+					} catch (TwitterException e){
+						log.warn("このツイートはお気に入りに登録できません. : " + e.getMessage() + " (@" + status.getUser().getScreenName() + ")");
+					}
+				});
 		log.debug(cnt + " 件の投稿をお気に入りに登録しました.");
 	}
 
@@ -111,10 +124,6 @@ public class BotTweetService {
 			}
 		}
 		return false;
-	}
-
-	private boolean filter(Filters filters, Status status) {
-		return filters.stream().filter(filter -> filter.filter(status)).count() > 0;
 	}
 
 	private Set<Long> getFollowIds() throws TwitterException {
