@@ -37,8 +37,8 @@ public class Filter {
 		this.keyword = keyword;
 	}
 
-	public boolean filter(Status status){
-		return filterType.filter(status, keyword);
+	public boolean find(Status status){
+		return filterType.find(status, keyword);
 	}
 
 	@Override

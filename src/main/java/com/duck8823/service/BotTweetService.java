@@ -51,7 +51,7 @@ public class BotTweetService {
 		int cnt = 0;
 		Filters filters = new Filters(filterRepository.list());
 		for(Status status : twitter.getHomeTimeline()){
-			if(status.getText() != null && status.getText().matches(".*水族館.*") && !filters.filter(status) && containsPhoto(status.getMediaEntities()) && !status.isRetweeted() && !detectFaces(status.getMediaEntities())){
+			if(status.getText() != null && status.getText().matches(".*水族館.*") && !filters.contains(status) && containsPhoto(status.getMediaEntities()) && !status.isRetweeted() && !detectFaces(status.getMediaEntities())){
 				twitter.retweetStatus(status.getId());
 				cnt++;
 			}
@@ -63,8 +63,8 @@ public class BotTweetService {
 		Filters filters = filterRepository.list();
 		QueryResult result = twitter.search(QueryFactory.create("水族館"));
 		result.getTweets().stream()
-				.filter(status -> !containsPhoto(status.getMediaEntities()))
-				.filter(filters::filter)
+				.filter(status -> containsPhoto(status.getMediaEntities()))
+				.filter(status -> !filters.contains(status))
 				.filter(status -> {
 					try {
 						return status.getUser().getId() != twitter.getOAuthAccessToken().getUserId();

@@ -21,7 +21,7 @@ public class Filters extends ArrayList<Filter> {
 		filters.stream().forEach(this::add);
 	}
 
-	public boolean filter(Status status){
-		return this.stream().filter(filter -> filter.filter(status)).count() > 0;
+	public boolean contains(Status status){
+		return this.stream().filter(filter -> filter.find(status)).count() > 0;
 	}
 }

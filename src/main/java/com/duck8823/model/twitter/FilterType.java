@@ -14,7 +14,7 @@ public enum FilterType {
 
 	TEXT{
 		@Override
-		boolean filter(Status status, String keyword){
+		boolean find(Status status, String keyword){
 			Pattern pattern = Pattern.compile(StringEscapeUtils.escapeJava(keyword));
 			Matcher matcher = pattern.matcher(status.getText());
 			return matcher.find();
@@ -22,7 +22,7 @@ public enum FilterType {
 	},
 	SCREEN_NAME{
 		@Override
-		boolean filter(Status status, String keyword){
+		boolean find(Status status, String keyword){
 			Pattern pattern = Pattern.compile("^" + StringEscapeUtils.escapeJava(keyword) + "$");
 			Matcher matcher = pattern.matcher(status.getUser().getScreenName());
 			return matcher.matches();
@@ -30,6 +30,6 @@ public enum FilterType {
 	},
 	;
 
-	abstract boolean filter(Status status, String keyword);
+	abstract boolean find(Status status, String keyword);
 
 }
