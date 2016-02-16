@@ -74,7 +74,7 @@ public class BotTweetService {
 				})
 				.filter(status -> {
 					try {
-						return twitter.showStatus(status.getId()).isFavorited();
+						return !twitter.showStatus(status.getId()).isFavorited();
 					} catch (TwitterException e) {
 						return false;
 					}
