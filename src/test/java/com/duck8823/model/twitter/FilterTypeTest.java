@@ -1,10 +1,16 @@
 package com.duck8823.model.twitter;
 
+import com.duck8823.TestConfiguration;
+import com.duck8823.context.twitter.QueryFactory;
 import com.duck8823.context.twitter.TestStatus;
 import com.duck8823.context.twitter.TestUser;
+import lombok.extern.log4j.Log4j;
 import org.junit.Test;
-import twitter4j.Status;
-import twitter4j.User;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import twitter4j.*;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -12,6 +18,9 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by maeda on 2016/01/31.
  */
+@Log4j
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = TestConfiguration.class)
 public class FilterTypeTest {
 
 	@Test
@@ -19,7 +28,7 @@ public class FilterTypeTest {
 		User user = new TestUser("TEST_NAME", "TEST_SCREEN_NAME");
 		Status status = new TestStatus(user, "TEXT");
 		Filter filter = new Filter(FilterType.SCREEN_NAME, "TEST_SCREEN_NAME");
-		assertTrue(filter.filter(status));
+		assertTrue(filter.find(status));
 	}
 
 	@Test
@@ -27,7 +36,7 @@ public class FilterTypeTest {
 		User user = new TestUser("NAME", "TEST_SCREEN_NAME");
 		Status status = new TestStatus(user, "TEXT");
 		Filter filter = new Filter(FilterType.SCREEN_NAME, "SCREEN_NAME");
-		assertFalse(filter.filter(status));
+		assertFalse(filter.find(status));
 	}
 
 	@Test
@@ -35,7 +44,7 @@ public class FilterTypeTest {
 		User user = new TestUser("NAME", "SCREEN_NAME");
 		Status status = new TestStatus(user, "TEST_TEXT");
 		Filter filter = new Filter(FilterType.TEXT, "TEST");
-		assertTrue(filter.filter(status));
+		assertTrue(filter.find(status));
 	}
 
 	@Test
@@ -43,6 +52,6 @@ public class FilterTypeTest {
 		User user = new TestUser("NAME", "SCREEN_NAME");
 		Status status = new TestStatus(user, "TEXT");
 		Filter filter = new Filter(FilterType.TEXT, "TEST");
-		assertFalse(filter.filter(status));
+		assertFalse(filter.find(status));
 	}
 }
