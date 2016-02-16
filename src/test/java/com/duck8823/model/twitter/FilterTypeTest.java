@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
  * Created by maeda on 2016/01/31.
  */
 @Log4j
-@RunWith(SpringJUnit4ClassRunner.class)
 public class FilterTypeTest {
 
 	@Test
