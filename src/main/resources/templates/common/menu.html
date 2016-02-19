@@ -1,66 +1,79 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
-	<nav class="navbar navbar-default" th:fragment="menu">
-		<div class="container-fluid">
-			<!-- タイトル -->
-			<div class="navbar-header">
-				<a class="navbar-brand" th:href="@{/}" th:text="#{application.title}">Demo App.</a>
-				<!-- スマホ用のボタン -->
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav_target">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-			</div>
-			<div class="collapse navbar-collapse" id="nav_target">
-				<ul class="nav navbar-nav">
-					<!-- 画像ギャラリー -->
-					<li><a th:href="@{/}" th:text="#{app.image.gallery}">Image gallery</a></li>
-					<!-- Photo -->
-					<li class="dropdown" sec:authorize="hasRole('ROLE_ADMIN')">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" >Photo<span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li><a th:href="@{/manage/photo/upload}" >Upload</a></li>
-							<li><a th:href="@{/manage/photo/place}" >Edit Place</a></li>
-							<li><a th:href="@{/manage/photo/rotate}" >Rotate</a></li>
-							<li><a th:href="@{/manage/photo/delete}" >Delete</a></li>
-						</ul>
-					</li>
-					<!-- Twitter -->
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" >Twitter<span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li><a th:href="@{/twitter/gallery}" th:text="#{app.image.gallery}">Image gallery</a></li>
-							<li><a th:href="@{/twitter/wordCloud}" th:text="#{app.word.cloud}">Word Cloud</a></li>
-							<th:block sec:authorize="hasRole('ROLE_ADMIN')">
-								<li class="divider"></li>
-								<li><a th:href="@{/manage/twitter/filter}">Filter</a></li>
-							</th:block>
-							<li class="divider"></li>
-							<li><a th:href="@{//twitter.com/duck8823}">@duck8823</a></li>
-						</ul>
-					</li>
-					<!-- Facebook -->
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Facebook<span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li><a th:href="@{/facebook/gallery}" th:text="#{app.image.gallery}">Image gallery</a></li>
-							<li><a th:href="@{/facebook/wordCloud}" th:text="#{app.word.cloud}">Word Cloud</a></li>
-						</ul>
-					</li>
-				</ul>
-				<ul class="nav navbar-nav navbar-right">
-					<li>
-						<a href="?lang=en" th:if="${#locale.language == 'ja'}">English</a>
-						<a href="?lang=ja" th:if="${#locale.language == 'en'}">日本語</a>
-					</li>
-					<li>
-						<a th:href="@{/login/}" sec:authorize="!isAuthenticated()">Login</a>
-						<a th:href="@{/logout/}" sec:authorize="isAuthenticated()">Logout</a>
-					</li>
-				</ul>
-			</div>
+<body>
+<nav class="navbar navbar-default" th:fragment="menu">
+	<div class="container-fluid">
+		<!-- タイトル -->
+		<div class="navbar-header">
+			<a class="navbar-brand" th:href="@{/}" th:text="#{application.title}">Demo App.</a>
+			<!-- スマホ用のボタン -->
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav_target">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
 		</div>
-	</nav>
+		<div class="collapse navbar-collapse" id="nav_target">
+			<ul class="nav navbar-nav">
+				<!-- 画像ギャラリー -->
+				<li><a th:href="@{/}" th:text="#{app.image.gallery}">Image gallery</a></li>
+				<!-- Photo -->
+				<li class="dropdown" sec:authorize="hasRole('ROLE_ADMIN')">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" >Photo<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a th:href="@{/manage/photo/upload}" >Upload</a></li>
+						<li><a th:href="@{/manage/photo/place}" >Edit Place</a></li>
+						<li><a th:href="@{/manage/photo/rotate}" >Rotate</a></li>
+						<li><a th:href="@{/manage/photo/delete}" >Delete</a></li>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">SNS App.<span class="caret"></span></a>
+					<!-- Twitter -->
+					<ul class="dropdown-menu multi-lebel">
+						<li class="dropdown-submenu">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" >Twitter</a>
+							<ul class="dropdown-menu">
+								<li><a th:href="@{/twitter/gallery}" th:text="#{app.image.gallery}">Image gallery</a></li>
+								<li><a th:href="@{/twitter/wordCloud}" th:text="#{app.word.cloud}">Word Cloud</a></li>
+								<th:block sec:authorize="hasRole('ROLE_ADMIN')">
+									<li class="divider"></li>
+									<li><a th:href="@{/manage/twitter/filter}">Filter</a></li>
+								</th:block>
+							</ul>
+						</li>
+						<!-- Facebook -->
+						<li class="dropdown-submenu">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Facebook</a>
+							<ul class="dropdown-menu">
+								<li><a th:href="@{/facebook/gallery}" th:text="#{app.image.gallery}">Image gallery</a></li>
+								<li><a th:href="@{/facebook/wordCloud}" th:text="#{app.word.cloud}">Word Cloud</a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<!-- About -->
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">About<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a th:href="@{//twitter.com/duck8823_bot}">Twitter</a></li>
+						<li><a th:href="@{//github.com/duck8823/demo}">Source Code</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="?lang=en" th:if="${#locale.language == 'ja'}">English</a>
+					<a href="?lang=ja" th:if="${#locale.language == 'en'}">日本語</a>
+				</li>
+				<li>
+					<a th:href="@{/login/}" sec:authorize="!isAuthenticated()">Login</a>
+					<a th:href="@{/logout/}" sec:authorize="isAuthenticated()">Logout</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+</body>
 </html>

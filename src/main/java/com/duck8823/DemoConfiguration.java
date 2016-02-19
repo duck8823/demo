@@ -1,23 +1,18 @@
 package com.duck8823;
 
-import com.duck8823.model.photo.Photo;
-import com.duck8823.model.twitter.Filter;
 import com.duck8823.web.servlet.i18n.SessionLocaleResolver;
-import org.hibernate.jpa.boot.scan.spi.Scanner;
-import org.springframework.beans.annotation.AnnotationBeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.servlet.handler.MappedInterceptor;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
 /**
@@ -29,9 +24,6 @@ import javax.sql.DataSource;
 @PropertySources({@PropertySource("classpath:application.properties")})
 @Configuration
 public class DemoConfiguration {
-
-	@Autowired
-	private EntityManager entityManager;
 
 	@Autowired
 	private DataSource dataSource;
