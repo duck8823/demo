@@ -1,11 +1,14 @@
 # demo
-[デモアプリ](http://www.duck8823.com)
+[デモアプリ](http://www.duck8823.com)  
 勉強用、思いついたものを作るアプリ  
+各ドキュメントへのリンク
   
   
-###Web
+####Webアプリ
+[ウェブアプリ](./doc/webapp.md)  
 
-###i18n
+####i18n
+[日と英のみ切り替えにする](./doc/i18n.md)  
 
 ###Error Handling
 
