@@ -65,6 +65,7 @@ public class BotTweetService {
 		result.getTweets().stream()
 				.filter(status -> containsPhoto(status.getMediaEntities()))
 				.filter(status -> !filters.contains(status))
+				.filter(status -> !status.isRetweeted())
 				.filter(status -> {
 					try {
 						return status.getUser().getId() != twitter.getOAuthAccessToken().getUserId();
