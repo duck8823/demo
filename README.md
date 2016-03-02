@@ -44,6 +44,7 @@
 - [ファイルアップロード](./doc/fileUpload.md)
 
 ##Hibernate
+- [Hibernate](./doc/hibernate.md)
 
 ##E-Mail send
 
