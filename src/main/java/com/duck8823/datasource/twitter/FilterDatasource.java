@@ -14,26 +14,26 @@ import java.util.Optional;
  * Created by maeda on 2016/01/11.
  */
 @Repository
-public class FilterDatasource extends AbstractDatasource implements FilterRepository {
+public class FilterDatasource extends AbstractDatasource<Filter> implements FilterRepository {
 
 	@Override
 	public Optional<Filter> findById(Long id) {
-		return Optional.ofNullable(Filter.class.cast(getSession().createCriteria(Filter.class).add(Restrictions.eq(Filter_.id.getName(), id)).uniqueResult()));
+		return null;
 	}
 
 	@Override
 	public Filters list() {
-		return new Filters(getSession().createCriteria(Filter.class).list());
+		return new Filters(super.findAll());
 	}
 
 	@Override
-	public void save(Filter filter) {
-		getSession().save(filter);
+	public void save(Filter filter){
+		super.save(filter);
 	}
 
 	@Override
-	public void delete(Filter filter) {
-		getSession().delete(filter);
+	public void delete(Filter entity) {
+		super.delete(entity);
 	}
 
 }

@@ -1,30 +1,68 @@
-package com.duck8823.datasource;
+# データベースコネクション
+データベースはh2、O/RマッパーとしてHibernateを利用する
+  
+  
+### 設定
+pom.xml
+```
+<dependency>
+	<groupId>com.h2database</groupId>
+	<artifactId>h2</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.hibernate</groupId>
+	<artifactId>hibernate-jpamodelgen</artifactId>
+</dependency>
+```
+  
+application.properties
+```
+spring.datasource.url=jdbc:h2:./db/demo;MODE=PostgreSQL
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.hibernate.ddl-auto=update
+```
+  
+  
+JavaConfig
+```java
+@Configuration
+public class DemoConfiguration {
 
-import com.duck8823.util.Generics;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
-import org.springframework.util.Assert;
+	@Autowired
+	private DataSource dataSource;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityNotFoundException;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+	@Bean
+	public LocalSessionFactoryBean sessionFactory() {
+		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+		sessionFactory.setDataSource(dataSource);
+		sessionFactory.setPackagesToScan("com.duck8823.model.**");
+		return sessionFactory;
+	}
 
+}
+```
+`sessionFactory.setPackagesToScan("com.duck8823.model.**");`で、パッケージ com.duck8823.model 以下の `@Entity` をスキャンする.  
+  
+  
+### DataSource
+```java
 /**
- * Created by maeda on 2016/01/11.
+ * Hibernateデータソース基底クラス
+ *
  */
-public abstract class AbstractDatasource<T> {
+public abstract class HibernateDataSource<T> {
 
-	 @Autowired
-	 private LocalSessionFactoryBean sessionFactory;
+	@Autowired
+	private LocalSessionFactoryBean sessionFactory;
 
-	 /**
-	  * 識別子によって検索する
-	  * @param id 識別子
+	/**
+	 * 識別子によって検索する
+	 * @param id 識別子
 	 * @return エンティティ
 	 */
 	@SuppressWarnings("unchecked")
@@ -121,3 +159,4 @@ public abstract class AbstractDatasource<T> {
 	}
 
 }
+```

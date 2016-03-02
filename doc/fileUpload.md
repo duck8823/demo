@@ -1,6 +1,13 @@
 #File Upload
 ファイルのアップロード  
   
+### アップロードサイズ
+application.properties
+```
+multipart.max-file-size=2048MB
+multipart.max-request-size=2048MB
+```
+  
 ###Formクラス
 [MultipartFile] (https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/multipart/MultipartFile.html)で受け取ることができる.  
 
