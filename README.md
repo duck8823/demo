@@ -47,6 +47,7 @@
 - [Hibernate](./doc/hibernate.md)
 
 ##E-Mail send
+- [メール送信](./doc/email.md)
 
 ##Schedule
 
