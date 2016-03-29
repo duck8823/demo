@@ -31,8 +31,6 @@ public class ScheduledTasks {
 	@Autowired
 	private BotTweetService botTweetService;
 
-	@Transactional
-	@Scheduled(fixedDelay = 10,  zone = "Asia/Tokyo")
 	public void removeFavorite() throws TwitterException {
 		log.debug("指定tweetのお気に入りを削除します.");
 		botTweetService.removeFavorite(714300941789298688L);
