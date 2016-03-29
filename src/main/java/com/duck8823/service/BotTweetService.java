@@ -33,6 +33,14 @@ public class BotTweetService {
 	@Autowired
 	private FilterRepository filterRepository;
 
+	public void removeFavorite(long... statusIds) throws TwitterException {
+		for(long id : statusIds){
+			Status status = twitter.destroyFavorite(id);
+			log.debug(status.getUser().getScreenName() + "のtweetをお気に入りから削除しました.");
+		}
+	}
+
+
 	public void post(Tweet tweet) throws TwitterException {
 		String message = "";
 		if(tweet.getTimestamp() != null){
