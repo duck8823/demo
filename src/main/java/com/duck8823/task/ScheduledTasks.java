@@ -55,14 +55,14 @@ public class ScheduledTasks {
 	}
 
 	@Transactional
-	@Scheduled(cron = "0 */5 * * * *", zone = "Asia/Tokyo")
+//	@Scheduled(cron = "0 */5 * * * *", zone = "Asia/Tokyo")
 	public void retweet() throws TwitterException, IOException, URISyntaxException {
 		log.debug("フォロワーの水族館写真をリツイート");
 		botTweetService.retweet();
 	}
 
 	@Transactional
-	@Scheduled(cron = "0 */15 * * * *", zone = "Asia/Tokyo")
+//	@Scheduled(cron = "0 */15 * * * *", zone = "Asia/Tokyo")
 	public void favorite() throws TwitterException {
 		log.debug("水族館の写真検索");
 		botTweetService.favorite();
