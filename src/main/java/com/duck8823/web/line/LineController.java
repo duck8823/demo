@@ -10,18 +10,18 @@ import com.linecorp.bot.model.content.TextContent;
 import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * LINE BOT をためす
  * Created by maeda on 7/30/2016.
  */
+@Transactional
 @Log4j
 @RequestMapping("line")
 @RestController
