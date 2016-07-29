@@ -92,6 +92,20 @@
 			<version>[2.0,)</version>
 		</dependency>
 
+		<!-- Line -->
+		<dependency>
+			<groupId>com.linecorp.bot</groupId>
+			<artifactId>line-bot-spring-boot</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+
+		<!-- JSON -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20160212</version>
+		</dependency>
+
 		<!-- データベース -->
 		<dependency>
 			<groupId>com.h2database</groupId>

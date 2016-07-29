@@ -5,15 +5,12 @@ import com.duck8823.model.photo.Photo;
 import com.duck8823.model.photo.PhotoRepository;
 import com.duck8823.model.photo.Photo_;
 import com.duck8823.model.photo.Photos;
-import com.duck8823.model.twitter.Filter;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * Created by maeda on 2015/12/12.

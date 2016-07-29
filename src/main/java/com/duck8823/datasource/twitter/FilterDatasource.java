@@ -3,9 +3,7 @@ package com.duck8823.datasource.twitter;
 import com.duck8823.datasource.AbstractDatasource;
 import com.duck8823.model.twitter.Filter;
 import com.duck8823.model.twitter.FilterRepository;
-import com.duck8823.model.twitter.Filter_;
 import com.duck8823.model.twitter.Filters;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
