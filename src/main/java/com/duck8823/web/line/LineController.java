@@ -1,5 +1,7 @@
 package com.duck8823.web.line;
 
+import com.duck8823.model.photo.Photo;
+import com.duck8823.service.PhotoService;
 import com.linecorp.bot.client.LineBotClient;
 import com.linecorp.bot.client.exception.LineBotAPIException;
 import com.linecorp.bot.model.callback.Event;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * LINE BOT をためす
@@ -27,14 +30,18 @@ public class LineController {
 	@Autowired
 	private LineBotClient lineBotClient;
 
+	@Autowired
+	private PhotoService photoService;
+
 	@RequestMapping(path = "callback", method = RequestMethod.POST)
 	public void callback(@LineBotMessages List<Event> events) throws LineBotAPIException {
 		for (Event event : events) {
 			Content content = event.getContent();
 			if (content instanceof TextContent) {
 				TextContent text = (TextContent) content;
-				log.debug(text.getText());
-				lineBotClient.sendText(text.getFrom(), text.getText());
+				Photo photo = photoService.random().get();
+				String url = "https://www.duck8823.com/photo/" + photo.getId();
+				lineBotClient.sendImage(text.getFrom(), url, url);
 			}
 		}
 	}
