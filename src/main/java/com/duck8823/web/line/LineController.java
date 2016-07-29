@@ -34,7 +34,7 @@ public class LineController {
 			if (content instanceof TextContent) {
 				TextContent text = (TextContent) content;
 				log.debug(text.getText());
-				lineBotClient.sendText(text.getText(), text.getFrom());
+				lineBotClient.sendText(text.getFrom(), text.getText());
 			}
 		}
 	}
