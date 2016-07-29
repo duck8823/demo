@@ -1,5 +1,6 @@
 package com.duck8823;
 
+import org.springframework.beans.factory.BeanCreationNotAllowedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -38,6 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.anyRequest()
 				.authenticated()
 				.and()
+				.csrf().requireCsrfProtectionMatcher(new AllExceptUrlsStartedWith("/line/callback")).and()
 				.formLogin()
 				.loginPage("/login/")
 				.loginProcessingUrl("/login/")
@@ -53,5 +58,37 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.deleteCookies("JSESSIONID")
 				.invalidateHttpSession(true)
 				.permitAll();
+	}
+
+	private static class AllExceptUrlsStartedWith implements RequestMatcher {
+
+		private static final String[] ALLOWED_METHODS =
+				new String[] {"GET", "HEAD", "TRACE", "OPTIONS"};
+
+		private final String[] allowedUrls;
+
+		public AllExceptUrlsStartedWith(String... allowedUrls) {
+			this.allowedUrls = allowedUrls;
+		}
+
+		@Override
+		public boolean matches(HttpServletRequest request) {
+			String method = request.getMethod();
+			for (String allowedMethod : ALLOWED_METHODS) {
+				if (allowedMethod.equals(method)) {
+					return false;
+				}
+			}
+
+			String uri = request.getRequestURI();
+			for (String allowedUrl : allowedUrls) {
+				if (uri.startsWith(allowedUrl)) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 	}
 }
