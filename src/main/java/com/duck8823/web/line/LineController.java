@@ -7,6 +7,8 @@ import com.duck8823.service.PhotoService;
 import com.linecorp.bot.client.LineBotClient;
 import com.linecorp.bot.client.exception.LineBotAPIException;
 import com.linecorp.bot.model.callback.Event;
+import com.linecorp.bot.model.callback.EventType;
+import com.linecorp.bot.model.callback.OperationEvent;
 import com.linecorp.bot.model.content.AddedAsFriendOperation;
 import com.linecorp.bot.model.content.Content;
 import com.linecorp.bot.model.content.TextContent;
