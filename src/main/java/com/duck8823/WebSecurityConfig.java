@@ -43,6 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.authenticated()
 				.and()
 				.csrf().requireCsrfProtectionMatcher(new AllExceptUrlsStartedWith("/line/callback")).and()
+				.csrf().disable()
 				.formLogin()
 				.loginPage("/login/")
 				.loginProcessingUrl("/login/")
