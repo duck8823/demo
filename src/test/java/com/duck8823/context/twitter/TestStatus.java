@@ -137,6 +137,16 @@ public class TestStatus implements Status {
 	}
 
 	@Override
+	public long getQuotedStatusId() {
+		return 0;
+	}
+
+	@Override
+	public Status getQuotedStatus() {
+		return null;
+	}
+
+	@Override
 	public int compareTo(Status o) {
 		return 0;
 	}

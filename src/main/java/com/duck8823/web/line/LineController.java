@@ -4,18 +4,20 @@ import com.duck8823.model.bot.Talk;
 import com.duck8823.model.bot.TalkBot;
 import com.duck8823.model.photo.Photo;
 import com.duck8823.service.PhotoService;
-import com.linecorp.bot.client.LineBotClient;
-import com.linecorp.bot.client.exception.LineBotAPIException;
-import com.linecorp.bot.model.callback.Event;
-import com.linecorp.bot.model.callback.EventType;
-import com.linecorp.bot.model.callback.OperationEvent;
-import com.linecorp.bot.model.content.AddedAsFriendOperation;
-import com.linecorp.bot.model.content.Content;
-import com.linecorp.bot.model.content.TextContent;
+import com.linecorp.bot.client.LineMessagingService;
+import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.event.Event;
+import com.linecorp.bot.model.event.FollowEvent;
+import com.linecorp.bot.model.event.JoinEvent;
+import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.event.message.MessageContent;
+import com.linecorp.bot.model.message.ImageMessage;
+import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import retrofit2.Response;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -33,7 +35,7 @@ import java.util.List;
 public class LineController {
 
 	@Autowired
-	private LineBotClient lineBotClient;
+	LineMessagingService lineMessagingService;
 
 	@Autowired
 	private TalkBot talkBot;
@@ -47,25 +49,47 @@ public class LineController {
 	}
 
 	@RequestMapping(path = "callback", method = RequestMethod.POST)
-	public void callback(@LineBotMessages List<Event> events, @ModelAttribute Talk talk) throws LineBotAPIException, IOException {
+	public void callback(@LineBotMessages List<Event> events, @ModelAttribute Talk talk) throws IOException {
+		log.debug("line bot callback.");
 		for (Event event : events) {
-			Content content = event.getContent();
-			if (content instanceof TextContent) {
-				TextContent text = (TextContent) content;
+			log.debug(event);
+			if (event instanceof MessageEvent) {
+				MessageContent message = ((MessageEvent) event).getMessage();
 
-				if (text.getText().contains("写真")){
+				if (message.toString().contains("写真")){
 					Photo photo = photoService.random().get();
 					String url = "https://www.duck8823.com/photo/" + photo.getId();
-					lineBotClient.sendImage(text.getFrom(), url, url);
+
+					Response response = lineMessagingService.replyMessage(
+							new ReplyMessage(
+									((MessageEvent) event).getReplyToken(),
+									new ImageMessage(url, url)
+							)).execute();
+					log.debug(response.isSuccessful());
+					log.debug(response.message());
 				} else {
-					Talk response = talkBot.talk(talk.respond(text.getText()));
+					Talk talkResponse = talkBot.talk(talk.respond(message.toString()));
 
-					lineBotClient.sendText(text.getFrom(), response.getContent());
+					Response response = lineMessagingService.replyMessage(
+							new ReplyMessage(
+									((MessageEvent) event).getReplyToken(),
+									new TextMessage(talkResponse.getContent())
+							)).execute();
+					log.debug(response.isSuccessful());
+					log.debug(response.message());
 				}
-			} else if (content instanceof AddedAsFriendOperation) {
-				AddedAsFriendOperation operation = (AddedAsFriendOperation) content;
-
-				lineBotClient.sendText(operation.getMid(), "このBotは docomo Developer supportのAPIを利用しています.\n会話の内容はドコモのサーバに送信されます.");
+			} else if (event instanceof FollowEvent) {
+				lineMessagingService.replyMessage(
+						new ReplyMessage(
+								((FollowEvent) event).getReplyToken(),
+								new TextMessage("このBotは docomo Developer supportのAPIを利用しています.\n会話の内容はドコモのサーバに送信されます.")
+						)).execute();
+			} else if (event instanceof JoinEvent) {
+				lineMessagingService.replyMessage(
+						new ReplyMessage(
+								((JoinEvent) event).getReplyToken(),
+								new TextMessage("このBotは docomo Developer supportのAPIを利用しています.\n会話の内容はドコモのサーバに送信されます.")
+						)).execute();
 			}
 		}
 	}

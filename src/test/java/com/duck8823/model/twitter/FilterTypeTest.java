@@ -2,6 +2,7 @@ package com.duck8823.model.twitter;
 
 import com.duck8823.context.twitter.TestStatus;
 import com.duck8823.context.twitter.TestUser;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;

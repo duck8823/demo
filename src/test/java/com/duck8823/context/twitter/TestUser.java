@@ -31,6 +31,11 @@ public class TestUser implements User {
 	}
 
 	@Override
+	public String getEmail() {
+		return null;
+	}
+
+	@Override
 	public String getScreenName() {
 		return screenName;
 	}
