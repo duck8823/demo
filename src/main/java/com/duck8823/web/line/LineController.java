@@ -6,13 +6,14 @@ import com.duck8823.model.photo.Photo;
 import com.duck8823.service.PhotoService;
 import com.linecorp.bot.client.LineMessagingService;
 import com.linecorp.bot.model.ReplyMessage;
-import com.linecorp.bot.model.event.Event;
-import com.linecorp.bot.model.event.FollowEvent;
-import com.linecorp.bot.model.event.JoinEvent;
-import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.action.MessageAction;
+import com.linecorp.bot.model.action.PostbackAction;
+import com.linecorp.bot.model.event.*;
 import com.linecorp.bot.model.event.message.MessageContent;
 import com.linecorp.bot.model.message.ImageMessage;
+import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.template.ConfirmTemplate;
 import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import retrofit2.Response;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -57,14 +59,18 @@ public class LineController {
 				MessageContent message = ((MessageEvent) event).getMessage();
 
 				if (message.toString().contains("写真")){
-					Photo photo = photoService.random().get();
-					String url = "https://www.duck8823.com/photo/" + photo.getId();
+					Response response = lineMessagingService.replyMessage(new ReplyMessage(
+							((MessageEvent) event).getReplyToken(),
+							new TemplateMessage("写真",
+									new ConfirmTemplate("写真欲しいですか？",
+											Arrays.asList(
+													new PostbackAction("欲しい", "photo"),
+													new MessageAction("いらない.", "いらない.")
+											)
+									)
+							)
+					)).execute();
 
-					Response response = lineMessagingService.replyMessage(
-							new ReplyMessage(
-									((MessageEvent) event).getReplyToken(),
-									new ImageMessage(url, url)
-							)).execute();
 					log.debug(response.isSuccessful());
 					log.debug(response.message());
 				} else {
@@ -90,6 +96,21 @@ public class LineController {
 								((JoinEvent) event).getReplyToken(),
 								new TextMessage("このBotは docomo Developer supportのAPIを利用しています.\n会話の内容はドコモのサーバに送信されます.")
 						)).execute();
+			} else if (event instanceof PostbackEvent) {
+				switch (((PostbackEvent) event).getPostbackContent().getData()){
+					case "photo":
+						Photo photo = photoService.random().get();
+						String url = "https://www.duck8823.com/photo/" + photo.getId();
+
+						Response response = lineMessagingService.replyMessage(
+								new ReplyMessage(
+										((PostbackEvent) event).getReplyToken(),
+										new ImageMessage(url, url)
+								)).execute();
+						log.debug(response.isSuccessful());
+						log.debug(response.message());
+						break;
+				}
 			}
 		}
 	}
