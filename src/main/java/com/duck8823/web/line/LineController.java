@@ -1,8 +1,10 @@
 package com.duck8823.web.line;
 
+import com.duck8823.model.bot.BotEnv;
 import com.duck8823.model.bot.Talk;
 import com.duck8823.model.bot.TalkBot;
 import com.duck8823.model.photo.Photo;
+import com.duck8823.service.BotEnvService;
 import com.duck8823.service.PhotoService;
 import com.linecorp.bot.client.LineMessagingService;
 import com.linecorp.bot.model.ReplyMessage;
@@ -24,6 +26,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * LINE BOT をためす
@@ -45,6 +48,9 @@ public class LineController {
 	@Autowired
 	private PhotoService photoService;
 
+	@Autowired
+	private BotEnvService botEnvService;
+
 	@ModelAttribute
 	private Talk talk() {
 		return new Talk();
@@ -55,10 +61,14 @@ public class LineController {
 		log.debug("line bot callback.");
 		for (Event event : events) {
 			log.debug(event);
+			Optional<BotEnv> botEnv = botEnvService.findById(event.getSource().getSenderId());
+			if (botEnv.isPresent() && botEnv.get().getQuiet()) {
+				break;
+			}
 			if (event instanceof MessageEvent) {
 				MessageContent message = ((MessageEvent) event).getMessage();
 
-				if (message.toString().contains("写真")){
+				if (message.toString().contains("写真")) {
 					Response response = lineMessagingService.replyMessage(new ReplyMessage(
 							((MessageEvent) event).getReplyToken(),
 							new TemplateMessage("写真",
@@ -69,6 +79,16 @@ public class LineController {
 											)
 									)
 							)
+					)).execute();
+
+					log.debug(response.isSuccessful());
+					log.debug(response.message());
+				} else if(message.toString().contains("だまれ") || message.toString().contains("静かにして")) {
+					botEnvService.save(new BotEnv(event.getSource().getSenderId(), true));
+
+					Response response = lineMessagingService.replyMessage(new ReplyMessage(
+							((MessageEvent) event).getReplyToken(),
+							new TextMessage("黙ります...")
 					)).execute();
 
 					log.debug(response.isSuccessful());

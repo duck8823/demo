@@ -32,6 +32,16 @@ public class TestStatus implements Status {
 	}
 
 	@Override
+	public int getDisplayTextRangeStart() {
+		return 0;
+	}
+
+	@Override
+	public int getDisplayTextRangeEnd() {
+		return 0;
+	}
+
+	@Override
 	public String getSource() {
 		return null;
 	}
@@ -169,11 +179,6 @@ public class TestStatus implements Status {
 	@Override
 	public MediaEntity[] getMediaEntities() {
 		return new MediaEntity[0];
-	}
-
-	@Override
-	public ExtendedMediaEntity[] getExtendedMediaEntities() {
-		return new ExtendedMediaEntity[0];
 	}
 
 	@Override
