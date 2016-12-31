@@ -80,7 +80,7 @@ public abstract class AbstractDatasource<T> {
 	 */
 	protected void save(T entity) {
 		Assert.notNull(entity);
-		currentSession().save(entity);
+		currentSession().merge(entity);
 	}
 
 	/**

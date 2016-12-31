@@ -61,14 +61,37 @@ public class LineController {
 		log.debug("line bot callback.");
 		for (Event event : events) {
 			log.debug(event);
-			Optional<BotEnv> botEnv = botEnvService.findById(event.getSource().getSenderId());
-			if (botEnv.isPresent() && botEnv.get().getQuiet()) {
-				break;
-			}
+
 			if (event instanceof MessageEvent) {
+
+				Optional<BotEnv> botEnv = botEnvService.findById(event.getSource().getSenderId());
+
 				MessageContent message = ((MessageEvent) event).getMessage();
 
-				if (message.toString().contains("写真")) {
+				if (message.toString().contains("しゃべって") || message.toString().contains("喋って")) {
+					botEnvService.save(new BotEnv(event.getSource().getSenderId(), false));
+
+					Response response = lineMessagingService.replyMessage(new ReplyMessage(
+							((MessageEvent) event).getReplyToken(),
+							new TextMessage("喋ります!")
+					)).execute();
+
+					log.debug(response.isSuccessful());
+					log.debug(response.message());
+
+				} else if (botEnv.isPresent() && botEnv.get().getQuiet()) {
+					break;
+				} else if (message.toString().contains("だまれ") || message.toString().contains("静かにして")) {
+					botEnvService.save(new BotEnv(event.getSource().getSenderId(), true));
+
+					Response response = lineMessagingService.replyMessage(new ReplyMessage(
+							((MessageEvent) event).getReplyToken(),
+							new TextMessage("黙ります...")
+					)).execute();
+
+					log.debug(response.isSuccessful());
+					log.debug(response.message());
+				} else if (message.toString().contains("写真")) {
 					Response response = lineMessagingService.replyMessage(new ReplyMessage(
 							((MessageEvent) event).getReplyToken(),
 							new TemplateMessage("写真",
@@ -79,16 +102,6 @@ public class LineController {
 											)
 									)
 							)
-					)).execute();
-
-					log.debug(response.isSuccessful());
-					log.debug(response.message());
-				} else if(message.toString().contains("だまれ") || message.toString().contains("静かにして")) {
-					botEnvService.save(new BotEnv(event.getSource().getSenderId(), true));
-
-					Response response = lineMessagingService.replyMessage(new ReplyMessage(
-							((MessageEvent) event).getReplyToken(),
-							new TextMessage("黙ります...")
 					)).execute();
 
 					log.debug(response.isSuccessful());
