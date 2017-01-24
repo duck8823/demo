@@ -12,6 +12,7 @@ import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.event.*;
 import com.linecorp.bot.model.event.message.MessageContent;
+import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.ImageMessage;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
@@ -33,7 +34,6 @@ import java.util.Optional;
  * Created by maeda on 7/30/2016.
  */
 @Transactional
-@SessionAttributes({"talk"})
 @Log4j
 @RequestMapping("line")
 @RestController
@@ -51,13 +51,8 @@ public class LineController {
 	@Autowired
 	private BotEnvService botEnvService;
 
-	@ModelAttribute
-	private Talk talk() {
-		return new Talk();
-	}
-
 	@RequestMapping(path = "callback", method = RequestMethod.POST)
-	public void callback(@LineBotMessages List<Event> events, @ModelAttribute Talk talk) throws IOException {
+	public void callback(@LineBotMessages List<Event> events) throws IOException {
 		log.debug("line bot callback.");
 		for (Event event : events) {
 			log.debug(event);
@@ -66,10 +61,10 @@ public class LineController {
 
 				Optional<BotEnv> botEnv = botEnvService.findById(event.getSource().getSenderId());
 
-				MessageContent message = ((MessageEvent) event).getMessage();
+				TextMessageContent message = (TextMessageContent) ((MessageEvent) event).getMessage();
 
-				if (message.toString().contains("しゃべって") || message.toString().contains("喋って")) {
-					botEnvService.save(new BotEnv(event.getSource().getSenderId(), false));
+				if (message.getText().contains("しゃべって") || message.getText().contains("喋って")) {
+					botEnvService.save(new BotEnv(event.getSource().getSenderId(), false, null, null));
 
 					Response response = lineMessagingService.replyMessage(new ReplyMessage(
 							((MessageEvent) event).getReplyToken(),
@@ -81,8 +76,8 @@ public class LineController {
 
 				} else if (botEnv.isPresent() && botEnv.get().getQuiet()) {
 					break;
-				} else if (message.toString().contains("だまれ") || message.toString().contains("静かにして")) {
-					botEnvService.save(new BotEnv(event.getSource().getSenderId(), true));
+				} else if (message.getText().contains("だまれ") || message.getText().contains("静かにして")) {
+					botEnvService.save(new BotEnv(event.getSource().getSenderId(), true, null, null));
 
 					Response response = lineMessagingService.replyMessage(new ReplyMessage(
 							((MessageEvent) event).getReplyToken(),
@@ -91,7 +86,7 @@ public class LineController {
 
 					log.debug(response.isSuccessful());
 					log.debug(response.message());
-				} else if (message.toString().contains("写真")) {
+				} else if (message.getText().contains("写真")) {
 					Response response = lineMessagingService.replyMessage(new ReplyMessage(
 							((MessageEvent) event).getReplyToken(),
 							new TemplateMessage("写真",
@@ -107,7 +102,11 @@ public class LineController {
 					log.debug(response.isSuccessful());
 					log.debug(response.message());
 				} else {
-					Talk talkResponse = talkBot.talk(talk.respond(message.toString()));
+					BotEnv env = botEnv.orElse(new BotEnv());
+					Talk talkResponse = talkBot.talk(env.talk().respond(message.getText()));
+					env.setContext((String) talkResponse.get("context"));
+					env.setMode((String) talkResponse.get("mode"));
+					botEnvService.save(env);
 
 					Response response = lineMessagingService.replyMessage(
 							new ReplyMessage(

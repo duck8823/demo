@@ -23,4 +23,14 @@ public class BotEnv {
 
 	@Column(name = "is_quiet")
 	private Boolean quiet;
+
+	@Column(name = "context")
+	private String context;
+
+	@Column(name = "mode")
+	private String mode;
+
+	public Talk talk() {
+		return new Talk(null, mode, context);
+	}
 }
