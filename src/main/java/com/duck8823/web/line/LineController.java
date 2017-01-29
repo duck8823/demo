@@ -11,7 +11,6 @@ import com.linecorp.bot.model.ReplyMessage;
 import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.event.*;
-import com.linecorp.bot.model.event.message.MessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.ImageMessage;
 import com.linecorp.bot.model.message.TemplateMessage;
@@ -20,7 +19,9 @@ import com.linecorp.bot.model.message.template.ConfirmTemplate;
 import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import retrofit2.Response;
 
 import javax.transaction.Transactional;
@@ -59,12 +60,13 @@ public class LineController {
 
 			if (event instanceof MessageEvent) {
 
-				Optional<BotEnv> botEnv = botEnvService.findById(event.getSource().getSenderId());
+				String id = event.getSource().getSenderId() != null ? event.getSource().getSenderId() : event.getSource().getUserId();
+				Optional<BotEnv> botEnv = botEnvService.findById(id);
 
 				TextMessageContent message = (TextMessageContent) ((MessageEvent) event).getMessage();
 
 				if (message.getText().contains("しゃべって") || message.getText().contains("喋って")) {
-					botEnvService.save(new BotEnv(event.getSource().getSenderId(), false, null, null));
+					botEnvService.save(new BotEnv(id, false, null, null));
 
 					Response response = lineMessagingService.replyMessage(new ReplyMessage(
 							((MessageEvent) event).getReplyToken(),
@@ -77,7 +79,7 @@ public class LineController {
 				} else if (botEnv.isPresent() && botEnv.get().getQuiet()) {
 					break;
 				} else if (message.getText().contains("だまれ") || message.getText().contains("静かにして")) {
-					botEnvService.save(new BotEnv(event.getSource().getSenderId(), true, null, null));
+					botEnvService.save(new BotEnv(id, true, null, null));
 
 					Response response = lineMessagingService.replyMessage(new ReplyMessage(
 							((MessageEvent) event).getReplyToken(),
@@ -102,7 +104,7 @@ public class LineController {
 					log.debug(response.isSuccessful());
 					log.debug(response.message());
 				} else {
-					BotEnv env = botEnv.orElse(new BotEnv());
+					BotEnv env = botEnv.orElse(new BotEnv(id));
 					Talk talkResponse = talkBot.talk(env.talk().respond(message.getText()));
 					env.setContext((String) talkResponse.get("context"));
 					env.setMode((String) talkResponse.get("mode"));

@@ -30,6 +30,11 @@ public class BotEnv {
 	@Column(name = "mode")
 	private String mode;
 
+	public BotEnv(String id) {
+		this.id = id;
+		this.quiet = false;
+	}
+
 	public Talk talk() {
 		return new Talk(null, mode, context);
 	}
