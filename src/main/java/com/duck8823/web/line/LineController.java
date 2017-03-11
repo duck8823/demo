@@ -63,7 +63,12 @@ public class LineController {
 				String id = event.getSource().getSenderId() != null ? event.getSource().getSenderId() : event.getSource().getUserId();
 				Optional<BotEnv> botEnv = botEnvService.findById(id);
 
-				TextMessageContent message = (TextMessageContent) ((MessageEvent) event).getMessage();
+				TextMessageContent message = null;
+				if (((MessageEvent) event).getMessage() instanceof TextMessageContent) {
+					message = (TextMessageContent) ((MessageEvent) event).getMessage();
+				} else {
+					return;
+				}
 
 				if (message.getText().contains("しゃべって") || message.getText().contains("喋って")) {
 					botEnvService.save(new BotEnv(id, false, null, null));
