@@ -1,0 +1,1 @@
+github_ext.warn_on_mondays
