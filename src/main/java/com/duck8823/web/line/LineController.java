@@ -6,6 +6,10 @@ import com.duck8823.model.bot.TalkBot;
 import com.duck8823.model.photo.Photo;
 import com.duck8823.service.BotEnvService;
 import com.duck8823.service.PhotoService;
+import com.flickr4java.flickr.Flickr;
+import com.flickr4java.flickr.FlickrException;
+import com.flickr4java.flickr.photos.PhotoList;
+import com.flickr4java.flickr.photos.SearchParameters;
 import com.linecorp.bot.client.LineMessagingService;
 import com.linecorp.bot.model.ReplyMessage;
 import com.linecorp.bot.model.action.MessageAction;
@@ -52,8 +56,11 @@ public class LineController {
 	@Autowired
 	private BotEnvService botEnvService;
 
+	@Autowired
+	private Flickr flickr;
+
 	@RequestMapping(path = "callback", method = RequestMethod.POST)
-	public void callback(@LineBotMessages List<Event> events) throws IOException {
+	public void callback(@LineBotMessages List<Event> events) throws IOException, FlickrException {
 		log.debug("line bot callback.");
 		for (Event event : events) {
 			log.debug(event);
@@ -70,7 +77,28 @@ public class LineController {
 					return;
 				}
 
-				if (message.getText().contains("しゃべって") || message.getText().contains("喋って")) {
+				if (message.getText().contains("画像")) {
+					String searchText = message.getText().replaceAll("(\\s|　)*画像(\\s|　)*", "");
+					log.debug(searchText);
+
+					SearchParameters params = new SearchParameters();
+					params.setText(searchText);
+					params.setSort(SearchParameters.RELEVANCE);
+
+					flickr.getPhotosInterface().search(params, 1, 1).forEach(photo -> {
+						try {
+							Response response = lineMessagingService.replyMessage(new ReplyMessage(
+									((MessageEvent) event).getReplyToken(),
+									new ImageMessage(photo.getLargeUrl(), photo.getSmallUrl())
+							)).execute();
+
+							log.debug(response.isSuccessful());
+							log.debug(response.message());
+						} catch (IOException e) {
+							throw new IllegalStateException(e);
+						}
+					});
+				} else if (message.getText().contains("しゃべって") || message.getText().contains("喋って")) {
 					botEnvService.save(new BotEnv(id, false, null, null));
 
 					Response response = lineMessagingService.replyMessage(new ReplyMessage(
