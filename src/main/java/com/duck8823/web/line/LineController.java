@@ -89,7 +89,7 @@ public class LineController {
 						try {
 							Response response = lineMessagingService.replyMessage(new ReplyMessage(
 									((MessageEvent) event).getReplyToken(),
-									new ImageMessage(photo.getLargeUrl(), photo.getSmallUrl())
+									new ImageMessage(photo.getMediumUrl(), photo.getSmallUrl())
 							)).execute();
 
 							log.debug(response.isSuccessful());
