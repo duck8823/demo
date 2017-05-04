@@ -79,6 +79,9 @@ public class LineController {
 
 				if (message.getText().contains("画像")) {
 					String searchText = message.getText().replaceAll("(\\s|　)*画像(\\s|　)*", "");
+					if (searchText.isEmpty()) {
+						break;
+					}
 					log.debug(searchText);
 
 					SearchParameters params = new SearchParameters();
