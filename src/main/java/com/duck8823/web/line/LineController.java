@@ -114,7 +114,7 @@ public class LineController {
 
 				} else if (botEnv.isPresent() && botEnv.get().getQuiet()) {
 					break;
-				} else if (message.getText().contains("だまれ") || message.getText().contains("静かにして")) {
+				} else if (message.getText().contains("だまれ") || message.getText().contains("黙れ") || message.getText().contains("静かにして")) {
 					botEnvService.save(new BotEnv(id, true, null, null));
 
 					Response response = lineMessagingService.replyMessage(new ReplyMessage(
