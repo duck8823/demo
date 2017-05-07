@@ -25,7 +25,8 @@ public class BotEnv {
 	private Boolean quiet;
 
 	@Column(name = "context")
-	private String context;
+	private String
+			context;
 
 	@Column(name = "mode")
 	private String mode;

@@ -3,6 +3,7 @@ package com.duck8823.web.line;
 import com.duck8823.model.bot.BotEnv;
 import com.duck8823.model.bot.Talk;
 import com.duck8823.model.bot.TalkBot;
+import com.duck8823.model.open.weather.map.OpenWeatherMap;
 import com.duck8823.model.photo.Photo;
 import com.duck8823.service.BotEnvService;
 import com.duck8823.service.PhotoService;
@@ -15,13 +16,16 @@ import com.linecorp.bot.model.ReplyMessage;
 import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.event.*;
+import com.linecorp.bot.model.event.message.LocationMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.ImageMessage;
+import com.linecorp.bot.model.message.LocationMessage;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.message.template.ConfirmTemplate;
 import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.extern.log4j.Log4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,6 +63,9 @@ public class LineController {
 	@Autowired
 	private Flickr flickr;
 
+	@Autowired
+	private OpenWeatherMap openWeatherMap;
+
 	@RequestMapping(path = "callback", method = RequestMethod.POST)
 	public void callback(@LineBotMessages List<Event> events) throws IOException, FlickrException {
 		log.debug("line bot callback.");
@@ -73,9 +80,21 @@ public class LineController {
 				TextMessageContent message = null;
 				if (((MessageEvent) event).getMessage() instanceof TextMessageContent) {
 					message = (TextMessageContent) ((MessageEvent) event).getMessage();
+				} else if (((MessageEvent) event).getMessage() instanceof LocationMessageContent) {
+					LocationMessageContent locationMessage = (LocationMessageContent) ((MessageEvent) event).getMessage();
+					Response response = lineMessagingService.replyMessage(new ReplyMessage(
+							((MessageEvent) event).getReplyToken(),
+							new TextMessage(new JSONObject(openWeatherMap.search(locationMessage.getLatitude(), locationMessage.getLongitude())).toString().substring(0,2000))
+					)).execute();
+
+					log.debug(response.isSuccessful());
+					log.debug(response.message());
+
+					break;
 				} else {
 					return;
 				}
+
 
 				if (message.getText().contains("wiki")) {
 					String searchText = message.getText().replaceAll("(\\s|　)*wiki(\\s|　)*", "");
@@ -182,7 +201,7 @@ public class LineController {
 								new TextMessage("このBotは docomo Developer supportのAPIを利用しています.\n会話の内容はドコモのサーバに送信されます.")
 						)).execute();
 			} else if (event instanceof PostbackEvent) {
-				switch (((PostbackEvent) event).getPostbackContent().getData()){
+				switch (((PostbackEvent) event).getPostbackContent().getData()) {
 					case "photo":
 						Photo photo = photoService.random().get();
 						String url = "https://www.duck8823.com/photo/" + photo.getId();
