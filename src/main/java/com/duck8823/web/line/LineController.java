@@ -77,7 +77,22 @@ public class LineController {
 					return;
 				}
 
-				if (message.getText().contains("画像")) {
+				if (message.getText().contains("wiki")) {
+					String searchText = message.getText().replaceAll("(\\s|　)*wiki(\\s|　)*", "");
+					if (searchText.isEmpty()) {
+						break;
+					}
+					log.debug(searchText);
+
+					Response response = lineMessagingService.replyMessage(new ReplyMessage(
+							((MessageEvent) event).getReplyToken(),
+							new TextMessage("https://ja.wikipedia.org/wiki/" + searchText)
+					)).execute();
+
+					log.debug(response.isSuccessful());
+					log.debug(response.message());
+
+				} else if (message.getText().contains("画像")) {
 					String searchText = message.getText().replaceAll("(\\s|　)*画像(\\s|　)*", "");
 					if (searchText.isEmpty()) {
 						break;
