@@ -34,6 +34,7 @@ import retrofit2.Response;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -105,7 +106,7 @@ public class LineController {
 
 					Response response = lineMessagingService.replyMessage(new ReplyMessage(
 							((MessageEvent) event).getReplyToken(),
-							new TextMessage("https://ja.wikipedia.org/wiki/" + searchText)
+							new TextMessage("https://ja.wikipedia.org/wiki/" + URLEncoder.encode(searchText, "UTF-8"))
 					)).execute();
 
 					log.debug(response.isSuccessful());
