@@ -12,6 +12,7 @@ import com.flickr4java.flickr.FlickrException;
 import com.flickr4java.flickr.photos.PhotoList;
 import com.flickr4java.flickr.photos.SearchParameters;
 import com.linecorp.bot.client.LineMessagingService;
+import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.ReplyMessage;
 import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.action.PostbackAction;
@@ -22,9 +23,12 @@ import com.linecorp.bot.model.message.ImageMessage;
 import com.linecorp.bot.model.message.LocationMessage;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.template.CarouselColumn;
+import com.linecorp.bot.model.message.template.CarouselTemplate;
 import com.linecorp.bot.model.message.template.ConfirmTemplate;
 import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.extern.log4j.Log4j;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +39,7 @@ import retrofit2.Response;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -82,10 +87,24 @@ public class LineController {
 				if (((MessageEvent) event).getMessage() instanceof TextMessageContent) {
 					message = (TextMessageContent) ((MessageEvent) event).getMessage();
 				} else if (((MessageEvent) event).getMessage() instanceof LocationMessageContent) {
+					List<CarouselColumn> columns = new ArrayList<>();
+
 					LocationMessageContent locationMessage = (LocationMessageContent) ((MessageEvent) event).getMessage();
+					JSONObject res = new JSONObject(openWeatherMap.search(locationMessage.getLatitude(), locationMessage.getLongitude()));
+					for(Object item : res.getJSONArray("list")) {
+						JSONObject itemJSON = new JSONObject(item);
+						JSONObject weatherJSON = itemJSON.getJSONArray("weather").getJSONObject(0);
+						columns.add(new CarouselColumn(
+								"",
+								itemJSON.getString("dt_txt"),
+								weatherJSON.getString("description"),
+								new ArrayList<>()
+						));
+					}
+
 					Response response = lineMessagingService.replyMessage(new ReplyMessage(
 							((MessageEvent) event).getReplyToken(),
-							new TextMessage(new JSONObject(openWeatherMap.search(locationMessage.getLatitude(), locationMessage.getLongitude())).toString().substring(0,2000))
+							new TemplateMessage("template message", new CarouselTemplate(columns))
 					)).execute();
 
 					log.debug(response.isSuccessful());
