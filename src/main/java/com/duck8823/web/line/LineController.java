@@ -91,8 +91,9 @@ public class LineController {
 
 					LocationMessageContent locationMessage = (LocationMessageContent) ((MessageEvent) event).getMessage();
 					JSONObject res = new JSONObject(openWeatherMap.search(locationMessage.getLatitude(), locationMessage.getLongitude()));
-					for(Object item : res.getJSONArray("list")) {
-						JSONObject itemJSON = new JSONObject(item);
+					JSONArray list = res.getJSONArray("list");
+					for(int i = 0; i < list.length(); i++) {
+						JSONObject itemJSON = new JSONObject(list.getJSONObject(i));
 						JSONObject weatherJSON = itemJSON.getJSONArray("weather").getJSONObject(0);
 						columns.add(new CarouselColumn(
 								"",
