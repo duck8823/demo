@@ -7,6 +7,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import net.arnx.jsonic.JSON;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -24,10 +25,8 @@ public class OpenWeatherMap {
 
 	private String apiKey;
 
-	public Map<String, String> search(double lat, double lon) throws IOException {
+	public JSONObject search(double lat, double lon) throws IOException {
 		HttpRequest request = new NetHttpTransport().createRequestFactory().buildGetRequest(new GenericUrl(BASE_URL + "?APPID=" + apiKey + "&lat=" + BigDecimal.valueOf(lat).toPlainString() + "&lon=" + BigDecimal.valueOf(lon).toPlainString()));
-		Map<String, String> response = JSON.decode(request.execute().getContent());
-		log.debug(response);
-		return response;
+		return new JSONObject(request.execute().getContent());
 	}
 }
