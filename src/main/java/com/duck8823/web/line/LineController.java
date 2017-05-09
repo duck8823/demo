@@ -94,6 +94,7 @@ public class LineController {
 					JSONArray list = res.getJSONArray("list");
 					for(int i = 0; i < list.length(); i++) {
 						JSONObject itemJSON = new JSONObject(list.getJSONObject(i));
+						log.debug(itemJSON);
 						JSONObject weatherJSON = itemJSON.getJSONArray("weather").getJSONObject(0);
 						columns.add(new CarouselColumn(
 								"",
