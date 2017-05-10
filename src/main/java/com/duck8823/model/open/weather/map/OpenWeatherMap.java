@@ -5,12 +5,11 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import net.arnx.jsonic.JSON;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Map;
 
 /**
  * OpenWeatherMap
@@ -26,6 +25,7 @@ public class OpenWeatherMap {
 
 	public JSONObject search(double lat, double lon) throws IOException {
 		HttpRequest request = new NetHttpTransport().createRequestFactory().buildGetRequest(new GenericUrl(BASE_URL + "?APPID=" + apiKey + "&lat=" + BigDecimal.valueOf(lat).toPlainString() + "&lon=" + BigDecimal.valueOf(lon).toPlainString()));
-		return new JSONObject((Map<String, Object>) JSON.decode(request.execute().getContent()));
+		String str = IOUtils.toString(request.execute().getContent(), "UTF-8");
+		return new JSONObject(str);
 	}
 }
