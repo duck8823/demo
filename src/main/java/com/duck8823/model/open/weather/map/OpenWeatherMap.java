@@ -2,7 +2,6 @@ package com.duck8823.model.open.weather.map;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -27,6 +26,6 @@ public class OpenWeatherMap {
 
 	public JSONObject search(double lat, double lon) throws IOException {
 		HttpRequest request = new NetHttpTransport().createRequestFactory().buildGetRequest(new GenericUrl(BASE_URL + "?APPID=" + apiKey + "&lat=" + BigDecimal.valueOf(lat).toPlainString() + "&lon=" + BigDecimal.valueOf(lon).toPlainString()));
-		return new JSONObject(request.execute().getContent());
+		return new JSONObject((Map<String, Object>) JSON.decode(request.execute().getContent()));
 	}
 }
