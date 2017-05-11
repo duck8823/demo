@@ -14,6 +14,7 @@ import com.flickr4java.flickr.photos.SearchParameters;
 import com.linecorp.bot.client.LineMessagingService;
 import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.action.Action;
 import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.event.*;
@@ -39,10 +40,7 @@ import retrofit2.Response;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * LINE BOT をためす
@@ -97,10 +95,12 @@ public class LineController {
 						log.debug(itemJSON);
 						JSONObject weatherJSON = itemJSON.getJSONArray("weather").getJSONObject(0);
 						columns.add(new CarouselColumn(
-								"",
+								"http://openweathermap.org/img/w/" + weatherJSON.getString("icon") + ".png",
 								itemJSON.getString("dt_txt"),
 								weatherJSON.getString("description"),
-								new ArrayList<>()
+								Collections.singletonList(
+										new MessageAction("hoge", "fuga")
+								)
 						));
 					}
 
