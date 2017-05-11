@@ -90,7 +90,7 @@ public class LineController {
 					LocationMessageContent locationMessage = (LocationMessageContent) ((MessageEvent) event).getMessage();
 					JSONObject res = openWeatherMap.search(locationMessage.getLatitude(), locationMessage.getLongitude());
 					JSONArray list = res.getJSONArray("list");
-					for(int i = 0; i < list.length(); i++) {
+					for(int i = 0; i < list.length() && i < 5; i++) {
 						JSONObject itemJSON = list.getJSONObject(i);
 						log.debug(itemJSON);
 						JSONObject weatherJSON = itemJSON.getJSONArray("weather").getJSONObject(0);
