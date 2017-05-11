@@ -40,6 +40,8 @@ import retrofit2.Response;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -71,7 +73,7 @@ public class LineController {
 	private OpenWeatherMap openWeatherMap;
 
 	@RequestMapping(path = "callback", method = RequestMethod.POST)
-	public void callback(@LineBotMessages List<Event> events) throws IOException, FlickrException {
+	public void callback(@LineBotMessages List<Event> events) throws IOException, FlickrException, ParseException {
 		log.debug("line bot callback.");
 		for (Event event : events) {
 			log.debug(event);
@@ -96,9 +98,14 @@ public class LineController {
 						JSONObject weatherJSON = itemJSON.getJSONArray("weather").getJSONObject(0);
 						String thumbnail = "https://openweathermap.org/img/w/" + weatherJSON.getString("icon") + ".png";
 						log.debug(thumbnail);
+
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						sdf.setTimeZone(TimeZone.getTimeZone("JST"));
+						String date = sdf.format(new Date(itemJSON.getLong("dt")));
+
 						columns.add(new CarouselColumn(
 								thumbnail,
-								itemJSON.getString("dt_txt"),
+								date,
 								weatherJSON.getString("description"),
 								Collections.singletonList(
 										new MessageAction("hoge", "fuga")
