@@ -99,13 +99,17 @@ public class LineController {
 						String thumbnail = "https://openweathermap.org/img/w/" + weatherJSON.getString("icon") + ".png";
 						log.debug(thumbnail);
 
+
 						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+						Date date = sdf.parse(itemJSON.getString("dt_txt"));
+
 						sdf.setTimeZone(TimeZone.getTimeZone("JST"));
-						String date = sdf.format(new Date(itemJSON.getLong("dt")));
+						String dateTxt = sdf.format(date);
 
 						columns.add(new CarouselColumn(
 								thumbnail,
-								date,
+								dateTxt,
 								weatherJSON.getString("description"),
 								Collections.singletonList(
 										new MessageAction("hoge", "fuga")
