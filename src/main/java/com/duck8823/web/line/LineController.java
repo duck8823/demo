@@ -94,8 +94,10 @@ public class LineController {
 						JSONObject itemJSON = list.getJSONObject(i);
 						log.debug(itemJSON);
 						JSONObject weatherJSON = itemJSON.getJSONArray("weather").getJSONObject(0);
+						String thumbnail = "http://openweathermap.org/img/w/" + weatherJSON.getString("icon") + ".png";
+						log.debug(thumbnail);
 						columns.add(new CarouselColumn(
-								"http://openweathermap.org/img/w/" + weatherJSON.getString("icon") + ".png",
+								thumbnail,
 								itemJSON.getString("dt_txt"),
 								weatherJSON.getString("description"),
 								Collections.singletonList(
