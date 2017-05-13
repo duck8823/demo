@@ -100,7 +100,7 @@ public class LineController {
 						log.debug(thumbnail);
 
 
-						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 						Date date = sdf.parse(itemJSON.getString("dt_txt"));
 
@@ -117,7 +117,7 @@ public class LineController {
 										"humidity: " + itemJSON.getJSONObject("main").getDouble("humidity")
 								),
 								Collections.singletonList(
-										new MessageAction("hoge", "fuga")
+										new MessageAction("画像", weatherJSON.getString("description") + " 画像")
 								)
 						));
 					}
