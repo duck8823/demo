@@ -100,7 +100,7 @@ public class LineController {
 						log.debug(thumbnail);
 
 
-						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
 						sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 						Date date = sdf.parse(itemJSON.getString("dt_txt"));
 
@@ -110,7 +110,12 @@ public class LineController {
 						columns.add(new CarouselColumn(
 								thumbnail,
 								dateTxt,
-								weatherJSON.getString("description"),
+								String.join("\n",
+										weatherJSON.getString("description"),
+										"temp: " + itemJSON.getJSONObject("main").getDouble("temp"),
+										"pressure: " + itemJSON.getJSONObject("main").getDouble("pressure"),
+										"humidity: " + itemJSON.getJSONObject("main").getDouble("humidity")
+								),
 								Collections.singletonList(
 										new MessageAction("hoge", "fuga")
 								)
