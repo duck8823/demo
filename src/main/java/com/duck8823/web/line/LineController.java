@@ -9,33 +9,27 @@ import com.duck8823.service.BotEnvService;
 import com.duck8823.service.PhotoService;
 import com.flickr4java.flickr.Flickr;
 import com.flickr4java.flickr.FlickrException;
-import com.flickr4java.flickr.photos.PhotoList;
 import com.flickr4java.flickr.photos.SearchParameters;
-import com.linecorp.bot.client.LineMessagingService;
-import com.linecorp.bot.model.PushMessage;
+import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.ReplyMessage;
-import com.linecorp.bot.model.action.Action;
 import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.event.*;
 import com.linecorp.bot.model.event.message.LocationMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.ImageMessage;
-import com.linecorp.bot.model.message.LocationMessage;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.message.template.CarouselColumn;
 import com.linecorp.bot.model.message.template.CarouselTemplate;
 import com.linecorp.bot.model.message.template.ConfirmTemplate;
-import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
+import com.linecorp.bot.model.response.BotApiResponse;
+import com.linecorp.bot.spring.boot.annotation.EventMapping;
+import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import lombok.extern.log4j.Log4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import retrofit2.Response;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -43,6 +37,9 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+
+import static java.util.Collections.singletonList;
 
 /**
  * LINE BOT をためす
@@ -50,12 +47,11 @@ import java.util.*;
  */
 @Transactional
 @Log4j
-@RequestMapping("line")
-@RestController
+@LineMessageHandler
 public class LineController {
 
 	@Autowired
-	LineMessagingService lineMessagingService;
+	private LineMessagingClient lineMessagingClient;
 
 	@Autowired
 	private TalkBot talkBot;
@@ -72,189 +68,177 @@ public class LineController {
 	@Autowired
 	private OpenWeatherMap openWeatherMap;
 
-	@RequestMapping(path = "callback", method = RequestMethod.POST)
-	public void callback(@LineBotMessages List<Event> events) throws IOException, FlickrException, ParseException {
-		log.debug("line bot callback.");
-		for (Event event : events) {
-			log.debug(event);
+	@EventMapping
+	public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) throws IOException, ParseException, ExecutionException, InterruptedException {
+		List<CarouselColumn> columns = new ArrayList<>();
 
-			if (event instanceof MessageEvent) {
-
-				String id = event.getSource().getSenderId() != null ? event.getSource().getSenderId() : event.getSource().getUserId();
-				Optional<BotEnv> botEnv = botEnvService.findById(id);
-
-				TextMessageContent message = null;
-				if (((MessageEvent) event).getMessage() instanceof TextMessageContent) {
-					message = (TextMessageContent) ((MessageEvent) event).getMessage();
-				} else if (((MessageEvent) event).getMessage() instanceof LocationMessageContent) {
-					List<CarouselColumn> columns = new ArrayList<>();
-
-					LocationMessageContent locationMessage = (LocationMessageContent) ((MessageEvent) event).getMessage();
-					JSONObject res = openWeatherMap.search(locationMessage.getLatitude(), locationMessage.getLongitude());
-					JSONArray list = res.getJSONArray("list");
-					for(int i = 0; i < list.length() && i < 5; i++) {
-						JSONObject itemJSON = list.getJSONObject(i);
-						log.debug(itemJSON);
-						JSONObject weatherJSON = itemJSON.getJSONArray("weather").getJSONObject(0);
-						String thumbnail = "https://openweathermap.org/img/w/" + weatherJSON.getString("icon") + ".png";
-						log.debug(thumbnail);
+		LocationMessageContent locationMessage = (LocationMessageContent) ((MessageEvent) event).getMessage();
+		JSONObject res = openWeatherMap.search(locationMessage.getLatitude(), locationMessage.getLongitude());
+		JSONArray list = res.getJSONArray("list");
+		for(int i = 0; i < list.length() && i < 5; i++) {
+			JSONObject itemJSON = list.getJSONObject(i);
+			log.debug(itemJSON);
+			JSONObject weatherJSON = itemJSON.getJSONArray("weather").getJSONObject(0);
+			String thumbnail = "https://openweathermap.org/img/w/" + weatherJSON.getString("icon") + ".png";
+			log.debug(thumbnail);
 
 
-						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-						sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-						Date date = sdf.parse(itemJSON.getString("dt_txt"));
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+			Date date = sdf.parse(itemJSON.getString("dt_txt"));
 
-						sdf.setTimeZone(TimeZone.getTimeZone("JST"));
-						String dateTxt = sdf.format(date);
+			sdf.setTimeZone(TimeZone.getTimeZone("JST"));
+			String dateTxt = sdf.format(date);
 
-						columns.add(new CarouselColumn(
-								thumbnail,
-								dateTxt,
-								String.join("\n",
-										weatherJSON.getString("description"),
-										"temp: " + itemJSON.getJSONObject("main").getDouble("temp"),
-										"humidity: " + itemJSON.getJSONObject("main").getDouble("humidity")
-								),
-								Collections.singletonList(
-										new MessageAction("画像", weatherJSON.getString("description") + " 画像")
-								)
-						));
-					}
+			columns.add(new CarouselColumn(
+					thumbnail,
+					dateTxt,
+					String.join("\n",
+							weatherJSON.getString("description"),
+							"temp: " + itemJSON.getJSONObject("main").getDouble("temp"),
+							"humidity: " + itemJSON.getJSONObject("main").getDouble("humidity")
+					),
+					singletonList(
+							new MessageAction("画像", weatherJSON.getString("description") + " 画像")
+					)
+			));
+		}
 
-					Response response = lineMessagingService.replyMessage(new ReplyMessage(
-							((MessageEvent) event).getReplyToken(),
-							new TemplateMessage("template message", new CarouselTemplate(columns))
-					)).execute();
+		BotApiResponse response = lineMessagingClient.replyMessage(new ReplyMessage(
+				event.getReplyToken(),
+				new TemplateMessage("template message", new CarouselTemplate(columns))
+		)).get();
 
-					log.debug(response.isSuccessful());
-					log.debug(response.message());
+		log.debug(response.getMessage());
+	}
 
-					break;
-				} else {
-					return;
+	@EventMapping
+	public void handlePostbackEvent(PostbackEvent event) throws IOException, ExecutionException, InterruptedException {
+		switch (event.getPostbackContent().getData()) {
+			case "photo":
+				Photo photo = photoService.random().get();
+				String url = "https://www.duck8823.com/photo/" + photo.getId();
+
+				BotApiResponse response = lineMessagingClient.replyMessage(
+						new ReplyMessage(
+								event.getReplyToken(),
+								new ImageMessage(url, url)
+						)).get();
+				log.debug(response.getMessage());
+				break;
+		}
+	}
+
+	@EventMapping
+	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws ExecutionException, InterruptedException, IOException, FlickrException {
+		String id = event.getSource().getSenderId() != null ? event.getSource().getSenderId() : event.getSource().getUserId();
+		Optional<BotEnv> botEnv = botEnvService.findById(id);
+
+		TextMessageContent message = event.getMessage();
+
+		if (message.getText().contains("wiki")) {
+			String searchText = message.getText().replaceAll("(\\s|　)*wiki(\\s|　)*", "");
+			if (searchText.isEmpty()) {
+				return;
+			}
+			log.debug(searchText);
+
+			BotApiResponse response = lineMessagingClient.replyMessage(new ReplyMessage(
+					event.getReplyToken(),
+					new TextMessage("https://ja.wikipedia.org/wiki/" + URLEncoder.encode(searchText, "UTF-8"))
+			)).get();
+
+			log.debug(response.getMessage());
+
+		} else if (message.getText().contains("画像")) {
+			String searchText = message.getText().replaceAll("(\\s|　)*画像(\\s|　)*", "");
+			if (searchText.isEmpty()) {
+				return;
+			}
+			log.debug(searchText);
+
+			SearchParameters params = new SearchParameters();
+			params.setText(searchText);
+			params.setSort(SearchParameters.RELEVANCE);
+
+			flickr.getPhotosInterface().search(params, 1, 1).forEach(photo -> {
+				try {
+					BotApiResponse response = lineMessagingClient.replyMessage(new ReplyMessage(
+							event.getReplyToken(),
+							new ImageMessage(photo.getMediumUrl(), photo.getSmallUrl())
+					)).get();
+
+					log.debug(response.getMessage());
+				} catch (InterruptedException | ExecutionException e) {
+					log.error("error", e);
 				}
+			});
+		} else if (message.getText().contains("しゃべって") || message.getText().contains("喋って")) {
+			botEnvService.save(new BotEnv(id, false, null, null));
 
+			BotApiResponse response = lineMessagingClient.replyMessage(new ReplyMessage(
+					event.getReplyToken(),
+					new TextMessage("喋ります!")
+			)).get();
 
-				if (message.getText().contains("wiki")) {
-					String searchText = message.getText().replaceAll("(\\s|　)*wiki(\\s|　)*", "");
-					if (searchText.isEmpty()) {
-						break;
-					}
-					log.debug(searchText);
+			log.debug(response.getMessage());
 
-					Response response = lineMessagingService.replyMessage(new ReplyMessage(
-							((MessageEvent) event).getReplyToken(),
-							new TextMessage("https://ja.wikipedia.org/wiki/" + URLEncoder.encode(searchText, "UTF-8"))
-					)).execute();
+		} else if (botEnv.isPresent() && botEnv.get().getQuiet()) {
+			return;
+		} else if (message.getText().contains("だまれ") || message.getText().contains("黙れ") || message.getText().contains("静かにして")) {
+			botEnvService.save(new BotEnv(id, true, null, null));
 
-					log.debug(response.isSuccessful());
-					log.debug(response.message());
+			BotApiResponse response = lineMessagingClient.replyMessage(new ReplyMessage(
+					event.getReplyToken(),
+					new TextMessage("黙ります...")
+			)).get();
 
-				} else if (message.getText().contains("画像")) {
-					String searchText = message.getText().replaceAll("(\\s|　)*画像(\\s|　)*", "");
-					if (searchText.isEmpty()) {
-						break;
-					}
-					log.debug(searchText);
-
-					SearchParameters params = new SearchParameters();
-					params.setText(searchText);
-					params.setSort(SearchParameters.RELEVANCE);
-
-					flickr.getPhotosInterface().search(params, 1, 1).forEach(photo -> {
-						try {
-							Response response = lineMessagingService.replyMessage(new ReplyMessage(
-									((MessageEvent) event).getReplyToken(),
-									new ImageMessage(photo.getMediumUrl(), photo.getSmallUrl())
-							)).execute();
-
-							log.debug(response.isSuccessful());
-							log.debug(response.message());
-						} catch (IOException e) {
-							throw new IllegalStateException(e);
-						}
-					});
-				} else if (message.getText().contains("しゃべって") || message.getText().contains("喋って")) {
-					botEnvService.save(new BotEnv(id, false, null, null));
-
-					Response response = lineMessagingService.replyMessage(new ReplyMessage(
-							((MessageEvent) event).getReplyToken(),
-							new TextMessage("喋ります!")
-					)).execute();
-
-					log.debug(response.isSuccessful());
-					log.debug(response.message());
-
-				} else if (botEnv.isPresent() && botEnv.get().getQuiet()) {
-					break;
-				} else if (message.getText().contains("だまれ") || message.getText().contains("黙れ") || message.getText().contains("静かにして")) {
-					botEnvService.save(new BotEnv(id, true, null, null));
-
-					Response response = lineMessagingService.replyMessage(new ReplyMessage(
-							((MessageEvent) event).getReplyToken(),
-							new TextMessage("黙ります...")
-					)).execute();
-
-					log.debug(response.isSuccessful());
-					log.debug(response.message());
-				} else if (message.getText().contains("写真")) {
-					Response response = lineMessagingService.replyMessage(new ReplyMessage(
-							((MessageEvent) event).getReplyToken(),
-							new TemplateMessage("写真",
-									new ConfirmTemplate("写真欲しいですか？",
-											Arrays.asList(
-													new PostbackAction("欲しい", "photo"),
-													new MessageAction("いらない.", "いらない.")
-											)
+			log.debug(response.getMessage());
+		} else if (message.getText().contains("写真")) {
+			BotApiResponse response = lineMessagingClient.replyMessage(new ReplyMessage(
+					event.getReplyToken(),
+					new TemplateMessage("写真",
+							new ConfirmTemplate("写真欲しいですか？",
+									Arrays.asList(
+											new PostbackAction("欲しい", "photo"),
+											new MessageAction("いらない.", "いらない.")
 									)
 							)
-					)).execute();
+					)
+			)).get();
 
-					log.debug(response.isSuccessful());
-					log.debug(response.message());
-				} else {
-					BotEnv env = botEnv.orElse(new BotEnv(id));
-					Talk talkResponse = talkBot.talk(env.talk().respond(message.getText()));
-					env.setContext((String) talkResponse.get("context"));
-					env.setMode((String) talkResponse.get("mode"));
-					botEnvService.save(env);
+			log.debug(response.getMessage());
+		} else {
+			BotEnv env = botEnv.orElse(new BotEnv(id));
+			Talk talkResponse = talkBot.talk(env.talk().respond(message.getText()));
+			env.setContext((String) talkResponse.get("context"));
+			env.setMode((String) talkResponse.get("mode"));
+			botEnvService.save(env);
 
-					Response response = lineMessagingService.replyMessage(
-							new ReplyMessage(
-									((MessageEvent) event).getReplyToken(),
-									new TextMessage(talkResponse.getContent())
-							)).execute();
-					log.debug(response.isSuccessful());
-					log.debug(response.message());
-				}
-			} else if (event instanceof FollowEvent) {
-				lineMessagingService.replyMessage(
-						new ReplyMessage(
-								((FollowEvent) event).getReplyToken(),
-								new TextMessage("このBotは docomo Developer supportのAPIを利用しています.\n会話の内容はドコモのサーバに送信されます.")
-						)).execute();
-			} else if (event instanceof JoinEvent) {
-				lineMessagingService.replyMessage(
-						new ReplyMessage(
-								((JoinEvent) event).getReplyToken(),
-								new TextMessage("このBotは docomo Developer supportのAPIを利用しています.\n会話の内容はドコモのサーバに送信されます.")
-						)).execute();
-			} else if (event instanceof PostbackEvent) {
-				switch (((PostbackEvent) event).getPostbackContent().getData()) {
-					case "photo":
-						Photo photo = photoService.random().get();
-						String url = "https://www.duck8823.com/photo/" + photo.getId();
-
-						Response response = lineMessagingService.replyMessage(
-								new ReplyMessage(
-										((PostbackEvent) event).getReplyToken(),
-										new ImageMessage(url, url)
-								)).execute();
-						log.debug(response.isSuccessful());
-						log.debug(response.message());
-						break;
-				}
-			}
+			BotApiResponse response = lineMessagingClient.replyMessage(
+					new ReplyMessage(
+							event.getReplyToken(),
+							new TextMessage(talkResponse.getContent())
+					)).get();
+			log.debug(response.getMessage());
 		}
+	}
+
+	@EventMapping
+	public void handleFallowEvent(FollowEvent event) throws IOException, ExecutionException, InterruptedException {
+		lineMessagingClient.replyMessage(
+				new ReplyMessage(
+						event.getReplyToken(),
+						new TextMessage("このBotは docomo Developer supportのAPIを利用しています.\n会話の内容はドコモのサーバに送信されます.")
+				)).get();
+	}
+
+	@EventMapping
+	public void handleJoinEvent(JoinEvent event) throws IOException, ExecutionException, InterruptedException {
+		lineMessagingClient.replyMessage(
+				new ReplyMessage(
+						event.getReplyToken(),
+						new TextMessage("このBotは docomo Developer supportのAPIを利用しています.\n会話の内容はドコモのサーバに送信されます.")
+				)).get();
 	}
 }
