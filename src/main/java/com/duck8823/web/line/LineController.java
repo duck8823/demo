@@ -72,7 +72,7 @@ public class LineController {
 	public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) throws IOException, ParseException, ExecutionException, InterruptedException {
 		List<CarouselColumn> columns = new ArrayList<>();
 
-		LocationMessageContent locationMessage = (LocationMessageContent) ((MessageEvent) event).getMessage();
+		LocationMessageContent locationMessage = event.getMessage();
 		JSONObject res = openWeatherMap.search(locationMessage.getLatitude(), locationMessage.getLongitude());
 		JSONArray list = res.getJSONArray("list");
 		for(int i = 0; i < list.length() && i < 5; i++) {
@@ -240,5 +240,10 @@ public class LineController {
 						event.getReplyToken(),
 						new TextMessage("このBotは docomo Developer supportのAPIを利用しています.\n会話の内容はドコモのサーバに送信されます.")
 				)).get();
+	}
+
+	@EventMapping
+	public void defaultEvent(Event event) {
+		log.debug(event);
 	}
 }
