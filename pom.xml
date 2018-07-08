@@ -96,7 +96,7 @@
 		<dependency>
 			<groupId>com.linecorp.bot</groupId>
 			<artifactId>line-bot-spring-boot</artifactId>
-			<version>[1.0,)</version>
+			<version>1.15.0</version>
 		</dependency>
 
 		<!-- Flickr -->
